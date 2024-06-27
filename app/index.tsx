@@ -37,9 +37,9 @@ const schema = z.object({
 
 export default function index() {
 
-  //return (
-  //  <Redirect href="/auth"></Redirect>
-  //);
+  return (
+    <Redirect href="/login"></Redirect>
+  );
 
   //const navigation = useNavigation()
   //const globalParams = useGlobalSearchParams();
@@ -83,6 +83,7 @@ export default function index() {
     });
     */
 
+    /*
     const discovery = {
       authorizationEndpoint: 'http://192.168.20.98:8123/auth/authorize',
       tokenEndpoint: 'http://192.168.20.98:8123/auth/authorize',
@@ -151,10 +152,11 @@ export default function index() {
         </View>
       </PaperProvider>
     );
-  
+  */
 
 }
 
+/*
 const styles =  StyleSheet.create({
   container: {
     flex: 1,
@@ -177,3 +179,4 @@ const styles =  StyleSheet.create({
   }
 
 });
+*/

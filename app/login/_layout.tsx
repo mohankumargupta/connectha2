@@ -3,6 +3,8 @@ import { Stack } from "expo-router";
 
 export default function LoginLayout() {
   return (
-    <Stack></Stack>
+    <Stack screenOptions={{
+      headerShown: false
+    }}></Stack>
   )
 }

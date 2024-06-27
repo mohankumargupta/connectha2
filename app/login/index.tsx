@@ -35,10 +35,10 @@ const schema = z.object({
 
 export default function index() {
 
-  const navigation = useNavigation()
-  const globalParams = useGlobalSearchParams();
-  console.log(JSON.stringify(navigation.getState()))
-  console.log(JSON.stringify(globalParams));
+  //const navigation = useNavigation()
+  //const globalParams = useGlobalSearchParams();
+  //console.log(JSON.stringify(navigation.getState()))
+  //console.log(JSON.stringify(globalParams));
   /*  
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
