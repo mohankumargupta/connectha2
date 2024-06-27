@@ -14,10 +14,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {AuthRequest, DiscoveryDocument} from 'expo-auth-session';
 
-//import * as WebBrowser from 'expo-web-browser';
-//import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-
-//WebBrowser.maybeCompleteAuthSession();
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 //SplashScreen.preventAutoHideAsync();
@@ -29,77 +25,16 @@ type HomeAssistantURL = {
 const HOMEASSISTANT_CLIENTID = "https://mohankumargupta.github.io";
 const HOMEASSISTANT_REDIRECT_URI = "https://mohankumargupta.github.io/redirect/bigbutton.html";
 
-/*
-const schema = z.object({
-  homeassistant: z.string({required_error: "required", message: "moo"}),
-});
-*/
-
-//type Schema = z.infer<typeof schema>
-
 export default function index() {
 
   //const navigation = useNavigation()
   //const globalParams = useGlobalSearchParams();
   //console.log(JSON.stringify(navigation.getState()))
   //console.log(JSON.stringify(globalParams));
-  /*  
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-  */
-  /*
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
-  */
-
-    /*
-    const {
-      control,
-      handleSubmit,
-      formState: { errors },
-    } = useForm<Schema>({
-      defaultValues: {
-        homeassistant: ""
-      },
-      //resolver: zodResolver(schema),
-    });
-    */
-
-    /*
-    const discovery = {
-      authorizationEndpoint: 'http://192.168.20.98:8123/auth/authorize',
-      tokenEndpoint: 'http://192.168.20.98:8123/auth/authorize',
-    };
-
-    const [request, response, promptAsync] = useAuthRequest(
-      {
-        clientId: 'https://mohankumargupta.github.io',
-        redirectUri: "https://mohankumargupta.github.io/redirect/bigbutton.html"
-      },
-      discovery
-    );
-    */  
-
+ 
   const schema = z.object({
     url: z.string({required_error: "required", message: "moomoo"}).url({message: "url not ok. Must start with http:// or https://"}),
   });
-
 
   type Schema = z.infer<typeof schema>
 
@@ -117,6 +52,7 @@ export default function index() {
     const authSession = new AuthRequest({
       clientId: HOMEASSISTANT_CLIENTID,
       redirectUri: HOMEASSISTANT_REDIRECT_URI,
+      state: data,
     });      
 
     const discovery: DiscoveryDocument = {
@@ -155,22 +91,6 @@ export default function index() {
           
           
           <Button style={styles.button}   mode='contained' onPress={()=>{
-    /*
-    const discovery = {
-      authorizationEndpoint: 'http://192.168.20.98:8123/auth/authorize',
-      tokenEndpoint: 'http://192.168.20.98:8123/auth/authorize',
-    };
-
-    const [request, response, promptAsync] = useAuthRequest(
-      {
-        clientId: 'https://mohankumargupta.github.io',
-        redirectUri: "https://mohankumargupta.github.io/redirect/bigbutton.html"
-      },
-      discovery
-    );
-    */   
-            
-            //console.log("boo");
             submit();
           }}>
             Connect
