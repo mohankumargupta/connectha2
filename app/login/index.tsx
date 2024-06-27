@@ -1,20 +1,21 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { useNavigation, useGlobalSearchParams } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+//import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+//import { useFonts } from 'expo-font';
+//import { useNavigation, useGlobalSearchParams } from 'expo-router';
+//import * as SplashScreen from 'expo-splash-screen';
+//import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+//import { useColorScheme } from '@/hooks/useColorScheme';
 import { Button, PaperProvider, TextInput } from 'react-native-paper';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import {AuthRequest, DiscoveryDocument} from 'expo-auth-session';
 
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
+//import * as WebBrowser from 'expo-web-browser';
+//import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
 
 //WebBrowser.maybeCompleteAuthSession();
 
@@ -24,6 +25,9 @@ import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
 type HomeAssistantURL = {
   url: string
 };
+
+const HOMEASSISTANT_CLIENTID = "https://mohankumargupta.github.io";
+const HOMEASSISTANT_REDIRECT_URI = "https://mohankumargupta.github.io/redirect/bigbutton.html";
 
 /*
 const schema = z.object({
@@ -77,6 +81,7 @@ export default function index() {
     });
     */
 
+    /*
     const discovery = {
       authorizationEndpoint: 'http://192.168.20.98:8123/auth/authorize',
       tokenEndpoint: 'http://192.168.20.98:8123/auth/authorize',
@@ -88,7 +93,8 @@ export default function index() {
         redirectUri: "https://mohankumargupta.github.io/redirect/bigbutton.html"
       },
       discovery
-    );  
+    );
+    */  
 
   const schema = z.object({
     url: z.string({required_error: "required", message: "moomoo"}).url({message: "url not ok. Must start with http:// or https://"}),
@@ -97,15 +103,28 @@ export default function index() {
 
   type Schema = z.infer<typeof schema>
 
-  const { control, handleSubmit } = useForm<Schema>(
+  const { control, handleSubmit, formState: {errors} } = useForm<Schema>(
     {
       resolver: zodResolver(schema)
     }
   );  
 
   const submit = handleSubmit(({url: data}:HomeAssistantURL) => {
-    console.log("moo");
-    alert(data);
+    console.log(data);
+    if (errors.url) {
+      return;
+    }
+    const authSession = new AuthRequest({
+      clientId: HOMEASSISTANT_CLIENTID,
+      redirectUri: HOMEASSISTANT_REDIRECT_URI,
+    });      
+
+    const discovery: DiscoveryDocument = {
+      authorizationEndpoint: `${data}/auth/authorize`,
+      tokenEndpoint: `${data}/auth/token`,
+    };
+
+    authSession.promptAsync(discovery);
   });
 
   return (
@@ -136,8 +155,22 @@ export default function index() {
           
           
           <Button style={styles.button}   mode='contained' onPress={()=>{
-            promptAsync();
-            console.log("boo");
+    /*
+    const discovery = {
+      authorizationEndpoint: 'http://192.168.20.98:8123/auth/authorize',
+      tokenEndpoint: 'http://192.168.20.98:8123/auth/authorize',
+    };
+
+    const [request, response, promptAsync] = useAuthRequest(
+      {
+        clientId: 'https://mohankumargupta.github.io',
+        redirectUri: "https://mohankumargupta.github.io/redirect/bigbutton.html"
+      },
+      discovery
+    );
+    */   
+            
+            //console.log("boo");
             submit();
           }}>
             Connect
