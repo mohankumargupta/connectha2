@@ -16,6 +16,32 @@ export default function home() {
       const access_token = await getValue("accessToken");
       const refrsh_token = await getValue("refreshToken");
       const ha_url = await getValue("haUrl");
+      const websocket_url = `${ha_url}/api/websocket`;
+      console.log(websocket_url);
+      const ws = new WebSocket(websocket_url);
+      ws.onopen = () => {
+        // connection opened
+        ws.send(JSON.stringify({
+          "type": "auth",
+          "access_token": access_token
+        })); // send a message
+      };
+      
+      ws.onmessage = e => {
+        // a message was received
+        console.log(e.data);
+      };
+      
+      ws.onerror = e => {
+        // an error occurred
+        console.log(e);
+      };
+      
+      ws.onclose = e => {
+        // connection closed
+        console.log(e.code, e.reason);
+      };
+
     }
 
     load();
