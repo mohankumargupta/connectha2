@@ -29,11 +29,15 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-build-properties", {
-        "android": {
-          "usesCleartextTraffic": true
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
-      }]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

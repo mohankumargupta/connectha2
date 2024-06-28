@@ -45,7 +45,7 @@ export default function index() {
   );  
 
   const submit = handleSubmit(({url: data}:HomeAssistantURL) => {
-    console.log(data);
+    //console.log(data);
     if (errors.url) {
       return;
     }

@@ -1,8 +1,19 @@
 import * as AuthSession from 'expo-auth-session';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import { useEffect } from 'react';
 import { View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import * as SecureStore from 'expo-secure-store';
+
+async function saveItem(key: string, value: string) {
+  await SecureStore.setItemAsync(key, value);
+}
+
+async function save(haUrl: string, token: AuthSession.TokenResponse) {
+  await saveItem("haUrl", haUrl);
+  await saveItem("accessToken", token.accessToken);
+  await saveItem("refreshToken", token.refreshToken!);
+}
 
 export default function auth() {
   const params = useLocalSearchParams<{code: string, state: string}>();
@@ -23,7 +34,12 @@ export default function auth() {
       },{
         tokenEndpoint: `${state}/auth/token`,
       });
-      console.log(tokenResponse);
+      //console.log("------------AUTH---------");
+      //console.log(tokenResponse);
+      if (state) {
+        await save(state, tokenResponse);
+        router.replace("/home")
+      }
     }
     exchange_token();
   }, []);
