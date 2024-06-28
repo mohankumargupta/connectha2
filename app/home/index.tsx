@@ -24,7 +24,12 @@ export default function home() {
         ws.send(JSON.stringify({
           "type": "auth",
           "access_token": access_token
-        })); // send a message
+        }));
+
+        ws.send(JSON.stringify({
+          "id": 1,
+          "type": "get_states"
+        }));
       };
       
       ws.onmessage = e => {
