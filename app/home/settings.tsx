@@ -2,8 +2,9 @@ import { useEffect } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as SecureStore from 'expo-secure-store';
-import { PaperProvider } from 'react-native-paper';
+import { Button, PaperProvider } from 'react-native-paper';
 import IconsList from './iconsList';
+import { router } from 'expo-router';
 
 async function getValue(key: string) {
   let result = await SecureStore.getItemAsync(key);
@@ -60,6 +61,11 @@ export default function settings() {
         <View style={styles.container}>
           <Text>Add Button</Text>
           <IconsList/>
+          <Button
+            onPress={()=> {
+               router.navigate("/home");
+            }}
+       >Save</Button>
       </View>
     </PaperProvider>
   )
@@ -68,11 +74,12 @@ export default function settings() {
 const styles =  StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 150,
+    paddingVertical: 50,
     paddingHorizontal: 50,
     //marginVertical: 50,
     justifyContent: "center",
-    rowGap: 32
+    rowGap: 32,
+    columnGap: 32,
   },
 
 
