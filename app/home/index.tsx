@@ -17,8 +17,9 @@ export default function home() {
     <PaperProvider>
       <View style={styles.container}>
         <TouchableOpacity onPress={() => console.log("pressed")}>
-         <Avatar.Icon style={styles.icon} icon={icon} size={196} color="green"/>
+         <Avatar.Icon style={styles.icon} icon={icon} size={196} color="white"/>
          </TouchableOpacity>
+         <Text>script.moo</Text>
       </View>
     </PaperProvider>
   )
