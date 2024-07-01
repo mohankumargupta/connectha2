@@ -15,6 +15,7 @@ const icons: { [key in string]: number } = {
 
 export default function IconsList() {
   //const iconName: MaterialIconName =  'play'
+  //https://stackoverflow.com/questions/72078720/how-to-use-expo-vector-icons-dynamically-through-props-in-typescript-react-nati
   
   const [query, setQuery] = useState('');
   
