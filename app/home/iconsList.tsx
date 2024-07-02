@@ -8,7 +8,8 @@ import MDIGlyphMap from 'react-native-vector-icons/glyphmaps/MaterialCommunityIc
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import { IconProps } from '@expo/vector-icons/build/createIconSet';
 
-type MaterialIconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
+//type MaterialIconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
+type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
 const icons: { [key in string]: number } = {
   ...MDIGlyphMap,
