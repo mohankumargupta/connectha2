@@ -6,9 +6,9 @@ import {useHAButtonState} from '@/components/AppState';
 // @ts-ignore
 import MDIGlyphMap from 'react-native-vector-icons/glyphmaps/MaterialCommunityIcons.json';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import { IconProps } from '@expo/vector-icons/build/createIconSet';
 
 type MaterialIconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
-
 
 const icons: { [key in string]: number } = {
   ...MDIGlyphMap,
@@ -44,7 +44,7 @@ export default function IconsList() {
        <Text>{iconNamesExact? "match": "no match"}</Text>
        <Text style={{fontFamily: "material-community"}}>{String.fromCodePoint(983705)}</Text>
        
-       { iconNamesExact && <MaterialCommunityIcons name={query.toLowerCase()} size={24} color="black" /> }
+       { iconNamesExact && <MaterialCommunityIcons name={query.toLowerCase() as MaterialIconName} size={24} color="black" /> }
 
 
     </PaperProvider>
