@@ -13,6 +13,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {AuthRequest, DiscoveryDocument} from 'expo-auth-session';
+import { useEffect } from 'react';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -71,6 +72,7 @@ export default function index() {
           <Controller 
              name = "url"
              control={control}
+             defaultValue='http://192.168.20.98:8123'
              rules={{
               required: true,
             }}

@@ -1,4 +1,4 @@
-import { useNavigation, useGlobalSearchParams, Redirect } from 'expo-router';
+import { useNavigation, useGlobalSearchParams, Redirect, router } from 'expo-router';
 import 'react-native-reanimated';
 
 //WebBrowser.maybeCompleteAuthSession();

@@ -5,6 +5,8 @@ import * as SecureStore from 'expo-secure-store';
 import { Button, PaperProvider } from 'react-native-paper';
 import IconsList from './iconsList';
 import { router } from 'expo-router';
+import { useWebsocketManager } from '@/stores/websocket';
+import { MessageBase, states } from '@/types/messages'; 
 
 async function getValue(key: string) {
   let result = await SecureStore.getItemAsync(key);
@@ -13,6 +15,8 @@ async function getValue(key: string) {
 }
 
 export default function settings() {
+  const connect = useWebsocketManager((state) => state.connect);
+  const sendMessage = useWebsocketManager((state) => state.sendMessage);
 
   useEffect(() => {
     async function load() {
@@ -21,6 +25,10 @@ export default function settings() {
       const ha_url = await getValue("haUrl");
       const websocket_url = `${ha_url}/api/websocket`;
       console.log(websocket_url);
+      if (access_token) {
+        connect(websocket_url, access_token);
+      }
+      /*
       const ws = new WebSocket(websocket_url);
       ws.onopen = () => {
         // connection opened
@@ -49,6 +57,8 @@ export default function settings() {
         // connection closed
         console.log(e.code, e.reason);
       };
+
+      */
 
     }
 

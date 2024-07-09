@@ -5,7 +5,7 @@ interface WebSocketInterface {
     socket: WebSocket|undefined,
     messageHandlers: Set<(event: string) => void>,
     id: number,
-    connect: (ha_url: string, access_token: string, subscribe: (event: string)=>void, unsubscribe: (event: string) => void ) => void,
+    connect: (ha_url: string, access_token: string) => void,
     sendMessage: (message: MessageBase) => void,
 }
 
@@ -15,11 +15,13 @@ function connected(socket: WebSocket|undefined): boolean {
     );
 }
 
-const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
+export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
     socket: undefined,
     id: 2, //id:1 is usually used for supportedFeatures message
     messageHandlers: new Set(),
-    connect: (ha_url: string, access_token: string, subscribe: (event: string)=>void, unsubscribe: (event: string) => void ) => {        
+    connect: (ha_url: string, access_token: string ) => {       
+        console.log(ha_url);
+        console.log(access_token); 
         set((state) => {
             if (connected(state.socket)) {
                 return {};
@@ -33,7 +35,12 @@ const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
               }; 
             ws.onerror = e => {
                 console.log(e);
-            }           
+            }
+            
+            ws.onmessage = e => {
+                console.log(JSON.parse(e.data));
+            }
+
             return {
                 socket: ws
             }; 
@@ -47,7 +54,5 @@ const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
         wsi.socket!.send(JSON.stringify(message));
         set((state)=>({id: newid}));
        }
-
-       
     },
   }))
