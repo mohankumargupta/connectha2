@@ -34,8 +34,8 @@ export default function index() {
     const refresh_token = await get_value_from_store(AuthData.refresh_token);
     const ha_url = await get_value_from_store(AuthData.ha_url);
     if (refresh_token && ha_url) {
-
       console.log(refresh_token);
+      console.log(access_token);
       console.log(ha_url);
       const tokenResult = await AuthSession.refreshAsync({
         clientId: "https://mohankumargupta.github.io",
@@ -48,6 +48,9 @@ export default function index() {
       if (tokenResult && tokenResult.accessToken) {
         console.log("here");
         await saveItem(AuthData.access_token, tokenResult.accessToken);
+        let boo = await get_value_from_store(AuthData.access_token);
+        console.log("access token from store: ", boo);
+
         setValid(true);
       }
     }

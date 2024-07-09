@@ -20,8 +20,8 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
     id: 2, //id:1 is usually used for supportedFeatures message
     messageHandlers: new Set(),
     connect: (ha_url: string, access_token: string ) => {       
-        console.log(ha_url);
-        console.log(access_token); 
+        //console.log(ha_url);
+        //console.log(access_token); 
         set((state) => {
             if (connected(state.socket)) {
                 return {};

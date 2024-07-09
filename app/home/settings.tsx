@@ -6,7 +6,8 @@ import { Button, PaperProvider } from 'react-native-paper';
 import IconsList from './iconsList';
 import { router } from 'expo-router';
 import { useWebsocketManager } from '@/stores/websocket';
-import { MessageBase, states } from '@/types/messages'; 
+import { MessageBase, states } from '@/types/messages';
+import { AuthData } from '@/constants/AuthData';
 
 async function getValue(key: string) {
   let result = await SecureStore.getItemAsync(key);
@@ -18,11 +19,12 @@ export default function settings() {
   const connect = useWebsocketManager((state) => state.connect);
   const sendMessage = useWebsocketManager((state) => state.sendMessage);
 
+
   useEffect(() => {
     async function load() {
-      const access_token = await getValue("accessToken");
-      const refresh_token = await getValue("refreshToken");
-      const ha_url = await getValue("haUrl");
+      const access_token = await getValue(AuthData.access_token);
+      const refresh_token = await getValue(AuthData.refresh_token);
+      const ha_url = await getValue(AuthData.ha_url);
       const websocket_url = `${ha_url}/api/websocket`;
       console.log(websocket_url);
       if (access_token) {
@@ -68,20 +70,20 @@ export default function settings() {
 
   return (
     <PaperProvider>
-        <View style={styles.container}>
-          <Text>Add Button</Text>
-          <IconsList/>
-          <Button
-            onPress={()=> {
-               router.navigate("/home");
-            }}
-       >Save</Button>
+      <View style={styles.container}>
+        <Text>Add Button</Text>
+        <IconsList />
+        <Button
+          onPress={() => {
+            router.navigate("/home");
+          }}
+        >Save</Button>
       </View>
     </PaperProvider>
   )
 }
 
-const styles =  StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 50,
