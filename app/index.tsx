@@ -3,47 +3,53 @@ import { useNavigation, useGlobalSearchParams, Redirect, router } from 'expo-rou
 //import 'react-native-reanimated';
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
+import * as AuthSession from 'expo-auth-session';
 
 //WebBrowser.maybeCompleteAuthSession();
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 //SplashScreen.preventAutoHideAsync();
 
+/*
 type HomeAssistantURL = {
   url: string
 };
-
+*/
 
 export default function index() {
 
-  const [access_token, setAccessToken] = useState<string|undefined>(undefined);
-  const [validtoken, setValidToken] = useState<boolean|undefined>(undefined);
-  const [url, setURL] = useState<string|undefined>(undefined);
-  const [valid, setValid] = useState<boolean|undefined>(undefined);
+  const [access_token, setAccessToken] = useState<string | undefined>(undefined);
+  const [valid, setValid] = useState<boolean | undefined>(undefined);
 
-  async function get_value_from_store(key: string) {
+  async function get_value_from_store(key: string): Promise<string | null> {
     let result = await SecureStore.getItemAsync(key);
-
-
-    console.log(result);
-    if (result) {
-      setValidToken(true);
-    }
+    return result;
   }
-  
+
+  async function saveItem(key: string, value: string) {
+    await SecureStore.setItemAsync(key, value);
+  }
+
   async function previous_login() {
-    await get_value_from_store(AuthData.refresh_token);
-    await get_value_from_store(AuthData.ha_url);
-    if (validtoken && url) {
-    /*
-const tokenResult = await AuthSession.refreshAsync({
-          clientId: "https://mohankumargupta.github.io",
-          refreshToken: refresh_token,
-        }, {
-          tokenEndpoint: ha_url,
-        },
+    const refresh_token = await get_value_from_store(AuthData.refresh_token);
+    const ha_url = await get_value_from_store(AuthData.ha_url);
+    if (refresh_token && ha_url) {
+
+      console.log(refresh_token);
+      console.log(ha_url);
+      const tokenResult = await AuthSession.refreshAsync({
+        clientId: "https://mohankumargupta.github.io",
+        refreshToken: refresh_token,
+      }, {
+        tokenEndpoint: `${ha_url}/auth/token`,
+      },
       );
-    */
+      console.log(tokenResult);
+      if (tokenResult && tokenResult.accessToken) {
+        console.log("here");
+        await saveItem(AuthData.access_token, tokenResult.accessToken);
+        setValid(true);
+      }
     }
     else {
 
@@ -59,10 +65,13 @@ const tokenResult = await AuthSession.refreshAsync({
 
   }, []);
 
+
+
+
   if (valid === undefined) {
     return <></>
   }
-  else if (validtoken === true) {
+  else if (valid) {
     return (
       <Redirect href="/home/settings"></Redirect>
     );
@@ -73,5 +82,6 @@ const tokenResult = await AuthSession.refreshAsync({
       <Redirect href="/login"></Redirect>
     );
   }
+
 }
 
