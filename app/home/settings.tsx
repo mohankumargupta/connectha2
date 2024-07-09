@@ -21,7 +21,7 @@ export default function settings() {
   useEffect(() => {
     async function load() {
       const access_token = await getValue("accessToken");
-      const refrsh_token = await getValue("refreshToken");
+      const refresh_token = await getValue("refreshToken");
       const ha_url = await getValue("haUrl");
       const websocket_url = `${ha_url}/api/websocket`;
       console.log(websocket_url);

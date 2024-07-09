@@ -1,5 +1,10 @@
 
 export enum AuthData {
-    refresh_token = "AccessToken",
+    access_token = "AccessToken",
+    refresh_token = "refreshToken",
     ha_url = "haUrl",
+}
+
+export enum AuthClient {
+    client_id = 'https://mohankumargupta.github.io'
 }
