@@ -1,3 +1,4 @@
+import { MessageBase } from '@/types/messages';
 import { create } from 'zustand'
 
 interface WebSocketInterface {
@@ -5,7 +6,7 @@ interface WebSocketInterface {
     messageHandlers: Set<(event: string) => void>,
     id: number,
     connect: (ha_url: string, access_token: string, subscribe: (event: string)=>void, unsubscribe: (event: string) => void ) => void,
-    send: (message: string) => void,
+    sendMessage: (message: MessageBase) => void,
 }
 
 function connected(socket: WebSocket|undefined): boolean {
@@ -14,9 +15,9 @@ function connected(socket: WebSocket|undefined): boolean {
     );
 }
 
-const useWebsocketManager = create<WebSocketInterface>((set) => ({
+const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
     socket: undefined,
-    id: 1,
+    id: 2, //id:1 is usually used for supportedFeatures message
     messageHandlers: new Set(),
     connect: (ha_url: string, access_token: string, subscribe: (event: string)=>void, unsubscribe: (event: string) => void ) => {        
         set((state) => {
@@ -29,15 +30,24 @@ const useWebsocketManager = create<WebSocketInterface>((set) => ({
                   "type": "auth",
                   "access_token": access_token
                 }));
-              };            
+              }; 
+            ws.onerror = e => {
+                console.log(e);
+            }           
             return {
                 socket: ws
             }; 
         });
     },
-    send: (message: string) => {
+    sendMessage: (message: MessageBase) => {
+       const wsi = get();
+       if (connected(wsi.socket)) {
+        const newid = wsi.id + 1;
+        message.id = message.id ? message.id: newid;
+        wsi.socket!.send(JSON.stringify(message));
+        set((state)=>({id: newid}));
+       }
+
        
     },
-    //increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-    //removeAllBears: () => set({ bears: 0 }),
   }))
