@@ -4,15 +4,16 @@ import { useEffect } from 'react';
 import { View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as SecureStore from 'expo-secure-store';
+import { AuthData } from '@/constants/AuthData';
 
 async function saveItem(key: string, value: string) {
   await SecureStore.setItemAsync(key, value);
 }
 
 async function save(haUrl: string, token: AuthSession.TokenResponse) {
-  await saveItem("haUrl", haUrl);
-  await saveItem("accessToken", token.accessToken);
-  await saveItem("refreshToken", token.refreshToken!);
+  await saveItem(AuthData.ha_url, haUrl);
+  await saveItem(AuthData.access_token, token.accessToken);
+  await saveItem(AuthData.refresh_token, token.refreshToken!);
 }
 
 export default function auth() {
