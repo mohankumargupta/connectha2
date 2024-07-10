@@ -30,6 +30,8 @@ export default function index() {
     await SecureStore.setItemAsync(key, value);
   }
 
+
+
   async function previous_login() {
     const refresh_token = await get_value_from_store(AuthData.refresh_token);
     const ha_url = await get_value_from_store(AuthData.ha_url);
@@ -37,6 +39,11 @@ export default function index() {
       console.log(refresh_token);
       console.log(access_token);
       console.log(ha_url);
+
+      if (refresh_token === null || ha_url === null) {
+        setValid(false);
+      }
+
       const tokenResult = await AuthSession.refreshAsync({
         clientId: "https://mohankumargupta.github.io",
         refreshToken: refresh_token,
@@ -45,6 +52,7 @@ export default function index() {
       },
       );
       console.log(tokenResult);
+
       if (tokenResult && tokenResult.accessToken) {
         console.log("here");
         await saveItem(AuthData.access_token, tokenResult.accessToken);
@@ -55,7 +63,7 @@ export default function index() {
       }
     }
     else {
-
+      setValid(false);
     }
 
   }
