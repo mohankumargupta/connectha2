@@ -44,22 +44,28 @@ export default function index() {
         setValid(false);
       }
 
-      const tokenResult = await AuthSession.refreshAsync({
-        clientId: "https://mohankumargupta.github.io",
-        refreshToken: refresh_token,
-      }, {
-        tokenEndpoint: `${ha_url}/auth/token`,
-      },
-      );
-      console.log(tokenResult);
+      try {
+        const tokenResult = await AuthSession.refreshAsync({
+          clientId: "https://mohankumargupta.github.io",
+          refreshToken: refresh_token,
+        }, {
+          tokenEndpoint: `${ha_url}/auth/token`,
+        },
+        );
+        console.log(tokenResult);
 
-      if (tokenResult && tokenResult.accessToken) {
-        console.log("here");
-        await saveItem(AuthData.access_token, tokenResult.accessToken);
-        let boo = await get_value_from_store(AuthData.access_token);
-        console.log("access token from store: ", boo);
+        if (tokenResult && tokenResult.accessToken) {
+          console.log("here");
+          await saveItem(AuthData.access_token, tokenResult.accessToken);
+          let boo = await get_value_from_store(AuthData.access_token);
+          console.log("access token from store: ", boo);
 
-        setValid(true);
+          setValid(true);
+        }
+      }
+
+      catch (error) {
+        setValid(false);
       }
     }
     else {

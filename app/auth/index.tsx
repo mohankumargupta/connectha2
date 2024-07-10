@@ -16,9 +16,9 @@ async function save(haUrl: string, token: AuthSession.TokenResponse) {
 }
 
 export default function auth() {
-  const params = useLocalSearchParams<{code: string, state: string}>();
+  const params = useLocalSearchParams<{ code: string, state: string }>();
   const code = params.code;
-  const state = params.state;  
+  const state = params.state;
 
   const HOMEASSISTANT_CLIENTID = "https://mohankumargupta.github.io";
   const HOMEASSISTANT_REDIRECT_URI = "https://mohankumargupta.github.io/redirect/bigbutton.html";
@@ -31,7 +31,7 @@ export default function auth() {
         clientId: HOMEASSISTANT_CLIENTID,
         redirectUri: HOMEASSISTANT_REDIRECT_URI,
         code: code
-      },{
+      }, {
         tokenEndpoint: `${state}/auth/token`,
       });
       //console.log("------------AUTH---------");
@@ -55,7 +55,7 @@ export default function auth() {
   }
   */
 
-  
+
 
 
 
@@ -78,8 +78,6 @@ export default function auth() {
 
 
   return (
-    <SafeAreaView>
-      <Text>Auth</Text>
-    </SafeAreaView>
+    <></>
   )
 }
