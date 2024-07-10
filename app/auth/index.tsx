@@ -39,7 +39,7 @@ export default function auth() {
       //console.log(tokenResponse);
       if (state) {
         await save(state, tokenResponse);
-        router.replace("/home/settings")
+        router.replace("/home/entitiesList")
       }
     }
     exchange_token();

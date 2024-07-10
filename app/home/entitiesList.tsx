@@ -1,9 +1,13 @@
 import { FlatList, Text, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 // You can import supported modules from npm
 import { List, Searchbar, PaperProvider } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useWebsocketManager } from '@/stores/websocket';
+import { AuthData } from '@/constants/AuthData';
+import * as SecureStore from 'expo-secure-store';
+import { states } from '@/types/messages';
 
 
 type Entity = {
@@ -890,7 +894,65 @@ const mydata = [
     }
 ];
 
-export default function App() {
+async function getValue(key: string) {
+    let result = await SecureStore.getItemAsync(key);
+    console.log(`${key}: ${result}`);
+    return result;
+}
+
+export default function EntitiesList() {
+    const connect = useWebsocketManager((state) => state.connect);
+    const sendMessage = useWebsocketManager((state) => state.sendMessage);
+
+    useEffect(() => {
+        async function load() {
+            const access_token = await getValue(AuthData.access_token);
+            const refresh_token = await getValue(AuthData.refresh_token);
+            const ha_url = await getValue(AuthData.ha_url);
+            const websocket_url = `${ha_url}/api/websocket`;
+            console.log(websocket_url);
+            if (access_token) {
+                connect(websocket_url, access_token);
+                sendMessage(states());
+            }
+            /*
+            const ws = new WebSocket(websocket_url);
+            ws.onopen = () => {
+              // connection opened
+              ws.send(JSON.stringify({
+                "type": "auth",
+                "access_token": access_token
+              }));
+      
+              ws.send(JSON.stringify({
+                "id": 1,
+                "type": "get_states"
+              }));
+            };
+            
+            ws.onmessage = e => {
+              // a message was received
+              console.log(e.data);
+            };
+            
+            ws.onerror = e => {
+              // an error occurred
+              console.log(e);
+            };
+            
+            ws.onclose = e => {
+              // connection closed
+              console.log(e.code, e.reason);
+            };
+      
+            */
+
+        }
+
+        load();
+
+    }, []);
+
 
     const renderItem = useCallback(({ item }: { item: Entity }) => (
 

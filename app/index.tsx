@@ -4,6 +4,7 @@ import { useNavigation, useGlobalSearchParams, Redirect, router } from 'expo-rou
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import * as AuthSession from 'expo-auth-session';
+import { websocketconnect } from './common/websocketconnect';
 
 //WebBrowser.maybeCompleteAuthSession();
 
@@ -95,7 +96,7 @@ export default function index() {
   }
   else if (valid) {
     return (
-      <Redirect href="/home/settings"></Redirect>
+      <Redirect href="/home/entitiesList"></Redirect>
     );
   }
 
