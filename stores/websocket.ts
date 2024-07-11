@@ -3,10 +3,11 @@ import { create } from 'zustand'
 
 interface WebSocketInterface {
     socket: WebSocket|undefined,
-    messageHandlers: Set<(event: string) => void>,
+    messageHandlers: Set<(event: MessageEvent<any>) => void>,
     id: number,
     connect: (ha_url: string, access_token: string) => void,
     sendMessage: (message: MessageBase) => void,
+    subscribe: (handler: (event: MessageEvent<any>) => void) => void,
 }
 
 function connected(socket: WebSocket|undefined): boolean {
@@ -39,6 +40,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
             
             ws.onmessage = e => {
                 console.log(JSON.parse(e.data));
+                get().messageHandlers.forEach((handler)=> handler(e));
             }
 
             return {
@@ -53,6 +55,10 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
         message.id = message.id ? message.id: newid;
         wsi.socket!.send(JSON.stringify(message));
         set((state)=>({id: newid}));
+       
        }
     },
+    subscribe:  (handler: (event: MessageEvent<any>) => void) => {
+        get().messageHandlers.add(handler);
+    }
   }))

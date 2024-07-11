@@ -903,6 +903,7 @@ async function getValue(key: string) {
 export default function EntitiesList() {
     const connect = useWebsocketManager((state) => state.connect);
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
+    const subscribe = useWebsocketManager((state) => state.subscribe);
 
     useEffect(() => {
         async function load() {
@@ -913,6 +914,10 @@ export default function EntitiesList() {
             console.log(websocket_url);
             if (access_token) {
                 connect(websocket_url, access_token);
+                subscribe((event) => {
+                    console.log("from entitiesList");
+                    console.log(JSON.stringify(event.data));
+                });
                 sendMessage(states());
             }
             /*
