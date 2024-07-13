@@ -39,7 +39,10 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
             }
             
             ws.onmessage = e => {
-                console.log(JSON.parse(e.data));
+                const message = JSON.parse(e.data);
+                console.log("---", message.type);
+                //console.log(JSON.parse(e.data));
+                
                 get().messageHandlers.forEach((handler)=> handler(e));
             }
 
@@ -50,7 +53,9 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
     },
     sendMessage: (message: MessageBase) => {
        const wsi = get();
+       console.log("send message");
        if (connected(wsi.socket)) {
+        console.log("end send message");
         const newid = wsi.id + 1;
         message.id = message.id ? message.id: newid;
         wsi.socket!.send(JSON.stringify(message));

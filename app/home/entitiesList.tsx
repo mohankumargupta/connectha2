@@ -916,9 +916,19 @@ export default function EntitiesList() {
                 connect(websocket_url, access_token);
                 subscribe((event) => {
                     console.log("from entitiesList");
-                    console.log(JSON.stringify(event.data));
+                    //console.log(event.data);
+                    const data = JSON.parse(event.data);
+                    if (data.type === "auth_ok") {
+                        sendMessage(states());
+
+                    }
+
+                    else if (data.type === "result") {
+                        const firstEntity = data.result[0];
+                        console.log(firstEntity);
+                    }
                 });
-                sendMessage(states());
+
             }
             /*
             const ws = new WebSocket(websocket_url);
