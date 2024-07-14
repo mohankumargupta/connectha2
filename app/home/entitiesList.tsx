@@ -15,6 +15,8 @@ type Entity = {
     "friendly_name": string,
 }
 
+
+/*
 const mydata = [
     {
         "entity_id": "automation.enter_of_leave_zone",
@@ -893,10 +895,11 @@ const mydata = [
         "friendly_name": "Melbourne PC User Group Moorabbin"
     }
 ];
+*/
 
 async function getValue(key: string) {
     let result = await SecureStore.getItemAsync(key);
-    console.log(`${key}: ${result}`);
+    //console.log(`${key}: ${result}`);
     return result;
 }
 
@@ -904,6 +907,8 @@ export default function EntitiesList() {
     const connect = useWebsocketManager((state) => state.connect);
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
     const subscribe = useWebsocketManager((state) => state.subscribe);
+
+    const [entities, setEntities] = useState<Array<Entity>>();
 
     useEffect(() => {
         async function load() {
@@ -920,12 +925,22 @@ export default function EntitiesList() {
                     const data = JSON.parse(event.data);
                     if (data.type === "auth_ok") {
                         sendMessage(states());
-
                     }
 
                     else if (data.type === "result") {
                         const firstEntity = data.result[0];
                         console.log(firstEntity);
+                        console.log(firstEntity.attributes.friendly_name);
+                        console.log(firstEntity.entity_id);
+                        const new_entities = data.result.map((item: Entity) => {
+                            return {
+                                "entity_id": item.entity_id,
+                                "friendly_name": item.friendly_name,
+                            };
+                        }).sort(
+                            (a: Entity, b: Entity) => a.entity_id < b.entity_id
+                        );
+                        setEntities(new_entities);
                     }
                 });
 
@@ -984,7 +999,9 @@ export default function EntitiesList() {
 
     const filterData = useCallback((query: string) => {
         const q = query.toLowerCase();
-        return mydata.filter((item) => item.entity_id.includes(q) || item.friendly_name.includes(q)).slice(0, 30);
+        if (entities) {
+            return entities.filter((item: Entity) => item.entity_id.includes(q) || item.friendly_name.includes(q)).slice(0, 30);
+        }
     }, []);
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -1008,7 +1025,7 @@ export default function EntitiesList() {
                 value={searchQuery}
             />
             <FlatList style={styles.paragraph}
-                data={showAutocomplete ? filterData(searchQuery) : mydata}
+                data={showAutocomplete ? filterData(searchQuery) : entities}
                 renderItem={renderItem}
                 keyExtractor={item => item.entity_id}
                 keyboardShouldPersistTaps='handled'
