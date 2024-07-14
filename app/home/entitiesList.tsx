@@ -1,5 +1,5 @@
 import { FlatList, Text, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 // You can import supported modules from npm
 import { List, Searchbar, PaperProvider } from 'react-native-paper';
@@ -21,6 +21,16 @@ async function getValue(key: string) {
     return result;
 }
 
+const EntityItem = memo(({ item, setSearchQuery }) => (
+    <List.Item
+        title={item.entity_id}
+        description={item.friendly_name}
+        left={props => <MaterialCommunityIcons name="play" size={24} style={styles.icons} color="black" />}
+        onPress={() => setSearchQuery(item.entity_id)}
+    />
+));
+
+
 export default function EntitiesList() {
     const connect = useWebsocketManager((state) => state.connect);
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
@@ -31,25 +41,14 @@ export default function EntitiesList() {
     useEffect(() => {
         async function load() {
             const access_token = await getValue(AuthData.access_token);
-            //const refresh_token = await getValue(AuthData.refresh_token);
-            //const ha_url = await getValue(AuthData.ha_url);
-            //const websocket_url = `${ha_url}/api/websocket`;
-            //console.log(websocket_url);
             if (access_token) {
-                //connect(websocket_url, access_token);
                 subscribe((event) => {
-                    //console.log("from entitiesList");
-                    //console.log(event.data);
                     const data = JSON.parse(event.data);
                     if (data.type === "auth_ok") {
                         sendMessage(states());
                     }
 
                     else if (data.type === "result") {
-                        //const firstEntity = data.result[0];
-                        //console.log(firstEntity);
-                        //console.log(firstEntity.friendly_name);
-                        //console.log(firstEntity.entity_id);
                         const new_entities = data.result.map((item: Entity) => {
                             return {
                                 "entity_id": item.entity_id,
@@ -65,38 +64,6 @@ export default function EntitiesList() {
                 });
 
             }
-            /*
-            const ws = new WebSocket(websocket_url);
-            ws.onopen = () => {
-              // connection opened
-              ws.send(JSON.stringify({
-                "type": "auth",
-                "access_token": access_token
-              }));
-      
-              ws.send(JSON.stringify({
-                "id": 1,
-                "type": "get_states"
-              }));
-            };
-            
-            ws.onmessage = e => {
-              // a message was received
-              console.log(e.data);
-            };
-            
-            ws.onerror = e => {
-              // an error occurred
-              console.log(e);
-            };
-            
-            ws.onclose = e => {
-              // connection closed
-              console.log(e.code, e.reason);
-            };
-      
-            */
-
         }
 
         load();
@@ -117,15 +84,25 @@ export default function EntitiesList() {
 
     ), []);
 
-    const filterData = useCallback((query: string) => {
-        const q = query.toLowerCase();
-        if (entities) {
-            return entities.filter((item: Entity) => item.entity_id.includes(q) || item.friendly_name.includes(q)).slice(0, 30);
-        }
-    }, []);
-
     const [searchQuery, setSearchQuery] = useState('');
     const [showAutocomplete, setShowAutocomplete] = useState(false);
+
+    const filterData = (query: string) => {
+        const q = query.toLowerCase();
+        console.log(q);
+        console.log(entities);
+        if (entities) {
+            console.log(entities[0]);
+            console.log(entities[0].entity_id);
+            console.log(entities[0].friendly_name);
+            return entities.filter((item: Entity) =>
+                item.entity_id !== undefined && item.friendly_name !== undefined &&
+                (item.entity_id.includes(q) ||
+                    item.friendly_name.includes(q)));
+        }
+    }
+
+
 
     return (
 
