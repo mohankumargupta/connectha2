@@ -89,12 +89,12 @@ export default function EntitiesList() {
 
     const filterData = (query: string) => {
         const q = query.toLowerCase();
-        console.log(q);
-        console.log(entities);
+        //console.log(q);
+        //console.log(entities);
         if (entities) {
-            console.log(entities[0]);
-            console.log(entities[0].entity_id);
-            console.log(entities[0].friendly_name);
+            //console.log(entities[0]);
+            //console.log(entities[0].entity_id);
+            //console.log(entities[0].friendly_name);
             return entities.filter((item: Entity) =>
                 item.entity_id !== undefined && item.friendly_name !== undefined &&
                 (item.entity_id.includes(q) ||
