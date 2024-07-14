@@ -5,6 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import * as AuthSession from 'expo-auth-session';
 import { websocketconnect } from './common/websocketconnect';
+import { useWebsocketManager } from '@/stores/websocket';
 
 //WebBrowser.maybeCompleteAuthSession();
 
@@ -21,6 +22,7 @@ export default function index() {
 
   const [access_token, setAccessToken] = useState<string | undefined>(undefined);
   const [valid, setValid] = useState<boolean | undefined>(undefined);
+  const connect = useWebsocketManager((state) => state.connect);
 
   async function get_value_from_store(key: string): Promise<string | null> {
     let result = await SecureStore.getItemAsync(key);
@@ -37,9 +39,8 @@ export default function index() {
     const refresh_token = await get_value_from_store(AuthData.refresh_token);
     const ha_url = await get_value_from_store(AuthData.ha_url);
     if (refresh_token && ha_url) {
-      console.log(refresh_token);
-      console.log(access_token);
-      console.log(ha_url);
+      //console.log("refresh token:", refresh_token);
+      //console.log("ha_url", ha_url);
 
       if (refresh_token === null || ha_url === null) {
         setValid(false);
@@ -53,14 +54,13 @@ export default function index() {
           tokenEndpoint: `${ha_url}/auth/token`,
         },
         );
-        console.log(tokenResult);
+        //console.log(tokenResult);
 
         if (tokenResult && tokenResult.accessToken) {
-          console.log("here");
           await saveItem(AuthData.access_token, tokenResult.accessToken);
-          let boo = await get_value_from_store(AuthData.access_token);
-          console.log("access token from store: ", boo);
-
+          //let boo = await get_value_from_store(AuthData.access_token);
+          //console.log("access token from store: ", boo);
+          connect(ha_url, tokenResult.accessToken);
           setValid(true);
         }
       }

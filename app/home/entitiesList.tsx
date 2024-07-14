@@ -908,14 +908,14 @@ export default function EntitiesList() {
     useEffect(() => {
         async function load() {
             const access_token = await getValue(AuthData.access_token);
-            const refresh_token = await getValue(AuthData.refresh_token);
-            const ha_url = await getValue(AuthData.ha_url);
-            const websocket_url = `${ha_url}/api/websocket`;
-            console.log(websocket_url);
+            //const refresh_token = await getValue(AuthData.refresh_token);
+            //const ha_url = await getValue(AuthData.ha_url);
+            //const websocket_url = `${ha_url}/api/websocket`;
+            //console.log(websocket_url);
             if (access_token) {
-                connect(websocket_url, access_token);
+                //connect(websocket_url, access_token);
                 subscribe((event) => {
-                    console.log("from entitiesList");
+                    //console.log("from entitiesList");
                     //console.log(event.data);
                     const data = JSON.parse(event.data);
                     if (data.type === "auth_ok") {

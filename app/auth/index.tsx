@@ -5,6 +5,7 @@ import { View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as SecureStore from 'expo-secure-store';
 import { AuthData } from '@/constants/AuthData';
+import { useWebsocketManager } from '@/stores/websocket';
 
 async function saveItem(key: string, value: string) {
   await SecureStore.setItemAsync(key, value);
@@ -24,6 +25,8 @@ export default function auth() {
   const HOMEASSISTANT_CLIENTID = "https://mohankumargupta.github.io";
   const HOMEASSISTANT_REDIRECT_URI = "https://mohankumargupta.github.io/redirect/bigbutton.html";
 
+  const connect = useWebsocketManager((state) => state.connect);
+
   useEffect(() => {
     async function exchange_token() {
       if (code == null) return;
@@ -39,6 +42,7 @@ export default function auth() {
       //console.log(tokenResponse);
       if (state) {
         await save(state, tokenResponse);
+        connect(state, tokenResponse.accessToken);
         router.replace("/home/entitiesList")
       }
     }
