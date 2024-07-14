@@ -930,7 +930,7 @@ export default function EntitiesList() {
                     else if (data.type === "result") {
                         const firstEntity = data.result[0];
                         console.log(firstEntity);
-                        console.log(firstEntity.attributes.friendly_name);
+                        console.log(firstEntity.friendly_name);
                         console.log(firstEntity.entity_id);
                         const new_entities = data.result.map((item: Entity) => {
                             return {
@@ -938,8 +938,9 @@ export default function EntitiesList() {
                                 "friendly_name": item.friendly_name,
                             };
                         }).sort(
-                            (a: Entity, b: Entity) => a.entity_id < b.entity_id
+                            (a: Entity, b: Entity) => a.entity_id.localeCompare(b.entity_id)
                         );
+                        console.log(new_entities);
                         setEntities(new_entities);
                     }
                 });
