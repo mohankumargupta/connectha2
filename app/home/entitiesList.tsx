@@ -10,9 +10,18 @@ import * as SecureStore from 'expo-secure-store';
 import { states } from '@/types/messages';
 
 
+const ITEM_HEIGHT = 70;
+
 type Entity = {
     "entity_id": string,
     "friendly_name": string,
+}
+
+type EntityFromHA = {
+    "entity_id": string,
+    "attributes": {
+        "friendly_name": string
+    }
 }
 
 async function getValue(key: string) {
@@ -21,12 +30,27 @@ async function getValue(key: string) {
     return result;
 }
 
+/*
 const EntityItem = memo(({ item, setSearchQuery }) => (
     <List.Item
         title={item.entity_id}
         description={item.friendly_name}
         left={props => <MaterialCommunityIcons name="play" size={24} style={styles.icons} color="black" />}
         onPress={() => setSearchQuery(item.entity_id)}
+    />
+));
+*/
+
+type EntityItemProps = {
+    item: Entity
+};
+
+const EntityItem = memo(({ item }: EntityItemProps) => (
+    <List.Item
+        title={item.entity_id}
+        description={item.friendly_name}
+        left={() => <MaterialCommunityIcons name="play" size={24} color="black" />}
+        onPress={() => console.log(item.entity_id)}
     />
 ));
 
@@ -37,6 +61,9 @@ export default function EntitiesList() {
     const subscribe = useWebsocketManager((state) => state.subscribe);
 
     const [entities, setEntities] = useState<Array<Entity>>();
+    const [filteredEntities, setFilteredEntities] = useState<Array<Entity>>();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showAutocomplete, setShowAutocomplete] = useState(false);
 
     useEffect(() => {
         async function load() {
@@ -49,7 +76,7 @@ export default function EntitiesList() {
                     }
 
                     else if (data.type === "result") {
-                        const new_entities = data.result.map((item: Entity) => {
+                        const new_entities = data.result.map((item: EntityFromHA) => {
                             return {
                                 "entity_id": item.entity_id,
                                 "friendly_name": item.attributes.friendly_name,
@@ -84,8 +111,7 @@ export default function EntitiesList() {
 
     ), []);
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [showAutocomplete, setShowAutocomplete] = useState(false);
+
 
     const filterData = (query: string) => {
         const q = query.toLowerCase();
@@ -95,10 +121,11 @@ export default function EntitiesList() {
             //console.log(entities[0]);
             //console.log(entities[0].entity_id);
             //console.log(entities[0].friendly_name);
-            return entities.filter((item: Entity) =>
+            const result = entities.filter((item: Entity) =>
                 item.entity_id !== undefined && item.friendly_name !== undefined &&
                 (item.entity_id.includes(q) ||
                     item.friendly_name.includes(q)));
+            setFilteredEntities(result);
         }
     }
 
@@ -117,21 +144,39 @@ export default function EntitiesList() {
 
                     else {
                         setShowAutocomplete(true);
+                        filterData(text);
                     }
                 }}
                 value={searchQuery}
             />
-            <FlatList style={styles.paragraph}
-                data={showAutocomplete ? filterData(searchQuery) : entities}
-                renderItem={renderItem}
-                keyExtractor={item => item.entity_id}
-                keyboardShouldPersistTaps='handled'
-            //initialNumToRender={15}
-            //windowSize={30}
-            //getItemLayout={(data, index) => (
-            // {length: 70, offset: 70 * index, index}
-            //)}
-            />
+
+            {showAutocomplete ?
+                <FlatList style={styles.paragraph}
+                    data={filteredEntities}
+                    renderItem={({ item }) => (
+                        <EntityItem item={item} />
+                    )}
+                    keyExtractor={item => item.entity_id}
+                    keyboardShouldPersistTaps='handled'
+                    getItemLayout={(data, index) => (
+                        { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
+                    )}
+                />
+                :
+                <FlatList style={styles.paragraph}
+                    data={entities}
+                    renderItem={({ item }) => (
+                        <EntityItem item={item} />
+                    )}
+                    keyExtractor={item => item.entity_id}
+                    keyboardShouldPersistTaps='handled'
+                    getItemLayout={(data, index) => (
+                        { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
+                    )}
+                />
+
+            }
+
         </SafeAreaView>
 
     );
@@ -157,3 +202,5 @@ const styles = StyleSheet.create({
 
     }
 });
+
+
