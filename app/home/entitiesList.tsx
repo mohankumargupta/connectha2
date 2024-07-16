@@ -8,10 +8,12 @@ import { useWebsocketManager } from '@/stores/websocket';
 import { AuthData } from '@/constants/AuthData';
 import * as SecureStore from 'expo-secure-store';
 import { states } from '@/types/messages';
+import { Entity, EntityFromHA } from '@/types/entities';
+import ListSearch from '@/components/ListSearch';
 
+//const ITEM_HEIGHT = 70;
 
-const ITEM_HEIGHT = 70;
-
+/*
 type Entity = {
     "entity_id": string,
     "friendly_name": string,
@@ -23,6 +25,7 @@ type EntityFromHA = {
         "friendly_name": string
     }
 }
+*/
 
 async function getValue(key: string) {
     let result = await SecureStore.getItemAsync(key);
@@ -41,6 +44,7 @@ const EntityItem = memo(({ item, setSearchQuery }) => (
 ));
 */
 
+/*
 type EntityItemProps = {
     item: Entity
 };
@@ -53,6 +57,7 @@ const EntityItem = memo(({ item }: EntityItemProps) => (
         onPress={() => console.log(item.entity_id)}
     />
 ));
+*/
 
 
 export default function EntitiesList() {
@@ -60,10 +65,10 @@ export default function EntitiesList() {
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
     const subscribe = useWebsocketManager((state) => state.subscribe);
 
-    const [entities, setEntities] = useState<Array<Entity>>();
-    const [filteredEntities, setFilteredEntities] = useState<Array<Entity>>();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [showAutocomplete, setShowAutocomplete] = useState(false);
+    const [entities, setEntities] = useState<Array<Entity>>([]);
+    //const [filteredEntities, setFilteredEntities] = useState<Array<Entity>>([]);
+    //const [searchQuery, setSearchQuery] = useState('');
+    //const [showAutocomplete, setShowAutocomplete] = useState(false);
 
     useEffect(() => {
         async function load() {
@@ -98,6 +103,7 @@ export default function EntitiesList() {
     }, []);
 
 
+    /*
     const renderItem = useCallback(({ item }: { item: Entity }) => (
 
         <List.Item
@@ -110,9 +116,9 @@ export default function EntitiesList() {
         />
 
     ), []);
+    */
 
-
-
+    /*
     const filterData = (query: string) => {
         const q = query.toLowerCase();
         //console.log(q);
@@ -128,58 +134,65 @@ export default function EntitiesList() {
             setFilteredEntities(result);
         }
     }
-
-
+    */
 
     return (
-
         <SafeAreaView style={styles.container}>
-            <Searchbar
-                placeholder="Search Entity"
-                onChangeText={(text) => {
-                    setSearchQuery(text);
-                    if (text.length === 0) {
-                        setShowAutocomplete(false);
-                    }
-
-                    else {
-                        setShowAutocomplete(true);
-                        filterData(text);
-                    }
-                }}
-                value={searchQuery}
-            />
-
-            {showAutocomplete ?
-                <FlatList style={styles.paragraph}
-                    data={filteredEntities}
-                    renderItem={({ item }) => (
-                        <EntityItem item={item} />
-                    )}
-                    keyExtractor={item => item.entity_id}
-                    keyboardShouldPersistTaps='handled'
-                    getItemLayout={(data, index) => (
-                        { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
-                    )}
-                />
-                :
-                <FlatList style={styles.paragraph}
-                    data={entities}
-                    renderItem={({ item }) => (
-                        <EntityItem item={item} />
-                    )}
-                    keyExtractor={item => item.entity_id}
-                    keyboardShouldPersistTaps='handled'
-                    getItemLayout={(data, index) => (
-                        { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
-                    )}
-                />
-
-            }
-
+            <ListSearch entities={entities} placeholder='Search Entities'></ListSearch>
         </SafeAreaView>
-
     );
+
+    /*
+     return (
+ 
+         <SafeAreaView style={styles.container}>
+             <Searchbar
+                 placeholder="Search Entity"
+                 onChangeText={(text) => {
+                     setSearchQuery(text);
+                     if (text.length === 0) {
+                         setShowAutocomplete(false);
+                     }
+ 
+                     else {
+                         setShowAutocomplete(true);
+                         filterData(text);
+                     }
+                 }}
+                 value={searchQuery}
+             />
+ 
+             {showAutocomplete ?
+                 <FlatList style={styles.paragraph}
+                     data={filteredEntities}
+                     renderItem={({ item }) => (
+                         <EntityItem item={item} />
+                     )}
+                     keyExtractor={item => item.entity_id}
+                     keyboardShouldPersistTaps='handled'
+                     getItemLayout={(data, index) => (
+                         { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
+                     )}
+                 />
+                 :
+                 <FlatList style={styles.paragraph}
+                     data={entities}
+                     renderItem={({ item }) => (
+                         <EntityItem item={item} />
+                     )}
+                     keyExtractor={item => item.entity_id}
+                     keyboardShouldPersistTaps='handled'
+                     getItemLayout={(data, index) => (
+                         { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
+                     )}
+                 />
+ 
+             }
+ 
+         </SafeAreaView>
+ 
+     );
+     */
 }
 
 const styles = StyleSheet.create({
