@@ -11,54 +11,11 @@ import { states } from '@/types/messages';
 import { Entity, EntityFromHA } from '@/types/entities';
 import ListSearch from '@/components/ListSearch';
 
-//const ITEM_HEIGHT = 70;
-
-/*
-type Entity = {
-    "entity_id": string,
-    "friendly_name": string,
-}
-
-type EntityFromHA = {
-    "entity_id": string,
-    "attributes": {
-        "friendly_name": string
-    }
-}
-*/
-
 async function getValue(key: string) {
     let result = await SecureStore.getItemAsync(key);
     //console.log(`${key}: ${result}`);
     return result;
 }
-
-/*
-const EntityItem = memo(({ item, setSearchQuery }) => (
-    <List.Item
-        title={item.entity_id}
-        description={item.friendly_name}
-        left={props => <MaterialCommunityIcons name="play" size={24} style={styles.icons} color="black" />}
-        onPress={() => setSearchQuery(item.entity_id)}
-    />
-));
-*/
-
-/*
-type EntityItemProps = {
-    item: Entity
-};
-
-const EntityItem = memo(({ item }: EntityItemProps) => (
-    <List.Item
-        title={item.entity_id}
-        description={item.friendly_name}
-        left={() => <MaterialCommunityIcons name="play" size={24} color="black" />}
-        onPress={() => console.log(item.entity_id)}
-    />
-));
-*/
-
 
 export default function EntitiesList() {
     const connect = useWebsocketManager((state) => state.connect);
@@ -66,9 +23,6 @@ export default function EntitiesList() {
     const subscribe = useWebsocketManager((state) => state.subscribe);
 
     const [entities, setEntities] = useState<Array<Entity>>([]);
-    //const [filteredEntities, setFilteredEntities] = useState<Array<Entity>>([]);
-    //const [searchQuery, setSearchQuery] = useState('');
-    //const [showAutocomplete, setShowAutocomplete] = useState(false);
 
     useEffect(() => {
         async function load() {
@@ -103,96 +57,11 @@ export default function EntitiesList() {
     }, []);
 
 
-    /*
-    const renderItem = useCallback(({ item }: { item: Entity }) => (
-
-        <List.Item
-            title={item.entity_id}
-            description={item.friendly_name}
-            left={props => <MaterialCommunityIcons name="play" size={24} style={styles.icons} color="black" />}
-            onPress={
-                (e) => setSearchQuery(item.entity_id)
-            }
-        />
-
-    ), []);
-    */
-
-    /*
-    const filterData = (query: string) => {
-        const q = query.toLowerCase();
-        //console.log(q);
-        //console.log(entities);
-        if (entities) {
-            //console.log(entities[0]);
-            //console.log(entities[0].entity_id);
-            //console.log(entities[0].friendly_name);
-            const result = entities.filter((item: Entity) =>
-                item.entity_id !== undefined && item.friendly_name !== undefined &&
-                (item.entity_id.includes(q) ||
-                    item.friendly_name.includes(q)));
-            setFilteredEntities(result);
-        }
-    }
-    */
-
     return (
         <SafeAreaView style={styles.container}>
             <ListSearch entities={entities} placeholder='Search Entities'></ListSearch>
         </SafeAreaView>
     );
-
-    /*
-     return (
- 
-         <SafeAreaView style={styles.container}>
-             <Searchbar
-                 placeholder="Search Entity"
-                 onChangeText={(text) => {
-                     setSearchQuery(text);
-                     if (text.length === 0) {
-                         setShowAutocomplete(false);
-                     }
- 
-                     else {
-                         setShowAutocomplete(true);
-                         filterData(text);
-                     }
-                 }}
-                 value={searchQuery}
-             />
- 
-             {showAutocomplete ?
-                 <FlatList style={styles.paragraph}
-                     data={filteredEntities}
-                     renderItem={({ item }) => (
-                         <EntityItem item={item} />
-                     )}
-                     keyExtractor={item => item.entity_id}
-                     keyboardShouldPersistTaps='handled'
-                     getItemLayout={(data, index) => (
-                         { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
-                     )}
-                 />
-                 :
-                 <FlatList style={styles.paragraph}
-                     data={entities}
-                     renderItem={({ item }) => (
-                         <EntityItem item={item} />
-                     )}
-                     keyExtractor={item => item.entity_id}
-                     keyboardShouldPersistTaps='handled'
-                     getItemLayout={(data, index) => (
-                         { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
-                     )}
-                 />
- 
-             }
- 
-         </SafeAreaView>
- 
-     );
-     */
 }
 
 const styles = StyleSheet.create({
