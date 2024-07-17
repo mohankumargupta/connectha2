@@ -36,7 +36,7 @@ const EntityItem = memo(({ item }: ListItemProps) => (
     />
 ));
 
-const RenderEntityItem = ({ item }: ListItemProps) => {
+const renderItem = ({ item }: ListItemProps) => {
     return <EntityItem item={item} />;
 };
 
@@ -83,7 +83,7 @@ export default function EntitiesList() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ListSearch entities={entities} placeholder='Search Entities' renderItem={({ item }) => <EntityItem item={item} />}></ListSearch>
+            <ListSearch entities={entities} placeholder='Search Entities' renderItem={renderItem}></ListSearch>
         </SafeAreaView>
     );
 }
