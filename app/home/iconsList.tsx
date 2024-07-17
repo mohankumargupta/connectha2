@@ -1,56 +1,28 @@
-import { useState } from 'react';
-import { View, Text } from 'react-native';
-import { PaperProvider, TextInput } from 'react-native-paper';
-import {useHAButtonState} from '@/components/AppState';
+import { Entity } from "@/types/entities";
+import { StyleSheet } from "react-native";
+import { Text } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams } from "expo-router";
 
-// @ts-ignore
-import MDIGlyphMap from 'react-native-vector-icons/glyphmaps/MaterialCommunityIcons.json';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
-import { IconProps } from '@expo/vector-icons/build/createIconSet';
+const IconsList = () => {
+    const { entity_id, friendly_name } = useLocalSearchParams();
 
-//type MaterialIconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
-type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
-
-const icons: { [key in string]: number } = {
-  ...MDIGlyphMap,
+    return (
+        <SafeAreaView style={styles.container}>
+            <Text>{entity_id}</Text>
+            <Text>{friendly_name}</Text>
+        </SafeAreaView>
+    );
 };
 
-export default function IconsList() {
-  //const iconName: MaterialIconName =  'play'
-  //https://stackoverflow.com/questions/72078720/how-to-use-expo-vector-icons-dynamically-through-props-in-typescript-react-nati
-  
-  const [query, setQuery] = useState('');
-  
-  const iconNames = Object.keys(icons).filter(
-    (item) =>
-      item.includes(query.toLowerCase().replace(/\s/g, '-')) ||
-      item.replace(/-/g, '').includes(query.toLowerCase())
-  );
+export default IconsList;
 
-  const iconNamesExact = Object.keys(icons).includes(query.toLowerCase());
-  useHAButtonState().icon = query.toLowerCase();
-
-  return (
-    <PaperProvider>
-       <TextInput
-         label="Icon"
-         value={query}
-         onChangeText={text => {
-          setQuery(text)
-
-        }}
-       /> 
-       <Text>{iconNames.length}</Text>
-       <Text>{iconNames[0]}</Text>
-       <Text>{iconNamesExact? "match": "no match"}</Text>
-       <Text style={{fontFamily: "material-community"}}>{String.fromCodePoint(983705)}</Text>
-       
-       { iconNamesExact && <MaterialCommunityIcons name={query.toLowerCase() as MaterialIconName} size={24} color="black" /> }
-
-
-    </PaperProvider>
-
-       
-    
-  );
-}
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: '#ecf0f1',
+        padding: 8,
+        marginTop: 40,
+    },
+});

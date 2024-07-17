@@ -3,6 +3,8 @@ import { memo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { List, Searchbar, PaperProvider } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { router } from "expo-router";
+import { Routes } from "@/constants/routes";
 
 type ListSearchProps = {
     entities: Array<Entity>,
@@ -18,7 +20,14 @@ const EntityItem = memo(({ item }: EntityItemProps) => (
         title={item.entity_id}
         description={item.friendly_name}
         left={() => <MaterialCommunityIcons name="play" size={24} color="black" />}
-        onPress={() => console.log(item.entity_id)}
+        onPress={() => {
+            router.push({
+                pathname: Routes.icons, params: {
+                    entity_id: item.entity_id,
+                    friendly_name: item.friendly_name,
+                }
+            });
+        }}
     />
 ));
 
@@ -29,12 +38,7 @@ const ListSearch = ({ entities, placeholder }: ListSearchProps) => {
 
     const filterData = (query: string) => {
         const q = query.toLowerCase();
-        //console.log(q);
-        //console.log(entities);
         if (entities) {
-            //console.log(entities[0]);
-            //console.log(entities[0].entity_id);
-            //console.log(entities[0].friendly_name);
             const result = entities.filter((item: Entity) =>
                 item.entity_id !== undefined && item.friendly_name !== undefined &&
                 (item.entity_id.includes(q) ||

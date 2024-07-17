@@ -72,17 +72,6 @@ const styles = StyleSheet.create({
         padding: 8,
         marginTop: 40,
     },
-    paragraph: {
-        margin: 24,
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    icons: {
-        marginTop: 15,
-        paddingRight: 10,
-
-    }
 });
 
 
