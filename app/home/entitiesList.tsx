@@ -9,7 +9,10 @@ import { AuthData } from '@/constants/AuthData';
 import * as SecureStore from 'expo-secure-store';
 import { states } from '@/types/messages';
 import { Entity, EntityFromHA } from '@/types/entities';
-import ListSearch from '@/components/ListSearch';
+import ListSearch, { FlatListItem, ListItemProps } from '@/components/ListSearch';
+import { router } from 'expo-router';
+import { Routes } from '@/constants/routes';
+
 
 async function getValue(key: string) {
     let result = await SecureStore.getItemAsync(key);
@@ -17,12 +20,32 @@ async function getValue(key: string) {
     return result;
 }
 
+const EntityItem = memo(({ item }: ListItemProps) => (
+    <List.Item
+        title={item.key}
+        description={item.name}
+        left={() => <MaterialCommunityIcons name="play" size={24} color="black" />}
+        onPress={() => {
+            router.push({
+                pathname: Routes.icons, params: {
+                    entity_id: item.key,
+                    friendly_name: item.name,
+                }
+            });
+        }}
+    />
+));
+
+const RenderEntityItem = ({ item }: ListItemProps) => {
+    return <EntityItem item={item} />;
+};
+
 export default function EntitiesList() {
     const connect = useWebsocketManager((state) => state.connect);
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
     const subscribe = useWebsocketManager((state) => state.subscribe);
 
-    const [entities, setEntities] = useState<Array<Entity>>([]);
+    const [entities, setEntities] = useState<Array<FlatListItem>>([]);
 
     useEffect(() => {
         async function load() {
@@ -35,13 +58,14 @@ export default function EntitiesList() {
                     }
 
                     else if (data.type === "result") {
-                        const new_entities = data.result.map((item: EntityFromHA) => {
+                        const new_entities = data.result.map((item: EntityFromHA): FlatListItem => {
                             return {
-                                "entity_id": item.entity_id,
-                                "friendly_name": item.attributes.friendly_name,
+                                "key": item.entity_id,
+                                "name": item.attributes.friendly_name,
+                                "icon": "play"
                             };
                         }).sort(
-                            (a: Entity, b: Entity) => a.entity_id.localeCompare(b.entity_id)
+                            (a: FlatListItem, b: FlatListItem) => a.key.localeCompare(b.key)
                         );
                         //console.log(new_entities[0]);
                         //console.log(new_entities);
@@ -59,7 +83,7 @@ export default function EntitiesList() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ListSearch entities={entities} placeholder='Search Entities'></ListSearch>
+            <ListSearch entities={entities} placeholder='Search Entities' renderItem={({ item }) => <EntityItem item={item} />}></ListSearch>
         </SafeAreaView>
     );
 }
