@@ -2,15 +2,17 @@ import { Text, SafeAreaView, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 
 import { Avatar, Button, SegmentedButtons } from 'react-native-paper';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Routes } from '@/constants/routes';
 
 type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
 export default function CustomizeButton() {
 
     const [value, setValue] = useState('toggle');
-    const { icon, entity_id, friendly_name } = useLocalSearchParams();
+    const { icon, entity_id, friendly_name } = useLocalSearchParams<{ icon: string, entity_id: string, friendly_name: string }>();
 
     useEffect(() => {
         //console.log(icon);
@@ -41,7 +43,21 @@ export default function CustomizeButton() {
             <Button
                 mode="contained"
                 style={styles.button}
-                onPress={e => console.log("boo")}
+                onPress={async e => {
+                    await AsyncStorage.setItem("entity_id", entity_id as string);
+                    await AsyncStorage.setItem("friendly_name", friendly_name as string);
+                    await AsyncStorage.setItem("action", value);
+                    await AsyncStorage.setItem("icon", icon as string);
+                    router.push({
+                        pathname: Routes.home,
+                        params: {
+                            entity_id,
+                            friendly_name,
+                            value,
+                            icon
+                        }
+                    });
+                }}
             >Save</Button>
 
         </SafeAreaView>
@@ -63,7 +79,7 @@ const styles = StyleSheet.create({
     },
     normal: {
         textAlign: 'center',
-        marginBottom: 8,
+        marginHorizontal: 8,
     },
     icon: {
         backgroundColor: "#2196f3",
