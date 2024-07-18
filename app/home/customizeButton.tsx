@@ -10,7 +10,7 @@ type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 export default function CustomizeButton() {
 
     const [value, setValue] = useState('toggle');
-    const { icon } = useLocalSearchParams();
+    const { icon, entity_id, friendly_name } = useLocalSearchParams();
 
     useEffect(() => {
         //console.log(icon);
@@ -19,7 +19,7 @@ export default function CustomizeButton() {
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.paragraph}>Preview</Text>
-            <Text style={styles.normal}>Garage door</Text>
+            <Text style={styles.normal}>{friendly_name}</Text>
             <Avatar.Icon style={styles.icon} icon={icon as MaterialIconName} size={196} color="white" />
 
             <Text style={styles.paragraph}>Action</Text>

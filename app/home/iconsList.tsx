@@ -25,7 +25,7 @@ const data = iconNamesAll.map((item: string): FlatListItem => (
     }
 ));
 
-const EntityItem = memo(({ item }: ListItemProps) => (
+const EntityItem = memo(({ item, entity_id, friendly_name }: ListItemProps & { entity_id: string, friendly_name: string }) => (
     <List.Item
         title={item.key}
         description={item.name}
@@ -34,15 +34,23 @@ const EntityItem = memo(({ item }: ListItemProps) => (
             console.log(item.icon);
             router.push({
                 pathname: Routes.customize, params: {
-                    icon: item.key
+                    icon: item.key,
+                    entity_id,
+                    friendly_name,
                 }
             });
         }}
     />
 ));
 
+/*
 const renderItem = ({ item }: ListItemProps) => {
     return <EntityItem item={item} />;
+};
+*/
+
+const renderItem = (entity_id: string, friendly_name: string) => ({ item }: ListItemProps) => {
+    return <EntityItem item={item} entity_id={entity_id} friendly_name={friendly_name} />;
 };
 
 const IconsList = () => {
@@ -63,7 +71,7 @@ const IconsList = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ListSearch entities={data} placeholder='Search Icon' renderItem={renderItem}></ListSearch>
+            <ListSearch entities={data} placeholder='Search Icon' renderItem={renderItem(entity_id as string, friendly_name as string)}></ListSearch>
         </SafeAreaView>
     );
 };
