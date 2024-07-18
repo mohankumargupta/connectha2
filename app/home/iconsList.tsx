@@ -31,10 +31,10 @@ const EntityItem = memo(({ item }: ListItemProps) => (
         description={item.name}
         left={() => <MaterialCommunityIcons name={item.key as MaterialIconName} size={24} color="black" />}
         onPress={() => {
+            console.log(item.icon);
             router.push({
-                pathname: Routes.icons, params: {
-                    entity_id: item.key,
-                    friendly_name: item.name,
+                pathname: Routes.customize, params: {
+                    icon: item.key
                 }
             });
         }}

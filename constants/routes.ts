@@ -5,4 +5,5 @@ export const Routes = {
     auth: '/auth',
     entities: '/home/entitiesList',
     icons: '/home/iconsList',
+    customize: '/home/customizeButton',
 };
