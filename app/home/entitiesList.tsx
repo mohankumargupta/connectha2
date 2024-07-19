@@ -10,7 +10,7 @@ import * as SecureStore from 'expo-secure-store';
 import { states } from '@/types/messages';
 import { Entity, EntityFromHA } from '@/types/entities';
 import ListSearch, { FlatListItem, ListItemProps } from '@/components/ListSearch';
-import { router, useNavigation } from 'expo-router';
+import { router, useNavigation, useRouter } from 'expo-router';
 import { Routes } from '@/constants/routes';
 
 
@@ -52,12 +52,11 @@ export default function EntitiesList() {
         async function load() {
 
             const access_token = await getValue(AuthData.access_token);
-            console.log(access_token);
             if (access_token) {
                 subscribe((event) => {
                     const data = JSON.parse(event.data);
                     if (data.type === "auth_ok") {
-                        sendMessage(states());
+                        //sendMessage(states());
                     }
 
                     else if (data.type === "result") {
@@ -75,6 +74,8 @@ export default function EntitiesList() {
                         setEntities(new_entities);
                     }
                 });
+                sendMessage(states());
+
 
             }
         }

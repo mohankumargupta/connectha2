@@ -56,7 +56,11 @@ export default function home() {
           style={styles.fab}
           icon="pencil"
           onPress={() => {
-            router.navigate(Routes.entities);
+            router.navigate({
+              pathname: Routes.entities, params: {
+                previousRoute: Routes.home,
+              }
+            });
           }}
         />
       </View>
