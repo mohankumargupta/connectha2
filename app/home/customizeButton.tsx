@@ -34,10 +34,10 @@ export default function CustomizeButton() {
                         label: 'Toggle',
                     },
                     {
-                        value: 'on',
+                        value: 'turn_on',
                         label: 'Turn On',
                     },
-                    { value: 'off', label: 'Turn Off' },
+                    { value: 'turn_off', label: 'Turn Off' },
                 ]}
             />
             <Button

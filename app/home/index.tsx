@@ -3,8 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import * as SecureStore from 'expo-secure-store';
 import { Avatar, FAB, PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import { Routes } from '@/constants/routes';
+import { useWebsocketManager } from '@/stores/websocket';
+import { callService } from '@/types/messages';
 
 async function getValue(key: string) {
   let result = await SecureStore.getItemAsync(key);
@@ -23,6 +25,9 @@ type HAButton = {
 
 export default function home() {
   const [habutton, setHAbutton] = useState<HAButton>();
+  const navigation = useNavigation();
+  const isFocused = navigation.isFocused;
+  const sendMessage = useWebsocketManager((state) => state.sendMessage);
 
   async function load() {
     const entity_id = await AsyncStorage.getItem("entity_id");
@@ -36,20 +41,30 @@ export default function home() {
         action,
         icon
       });
+
     }
 
   }
 
   useEffect(() => {
     load();
-  });
+
+  }, [isFocused]);
 
   return (
     <PaperProvider>
       <View style={styles.container}>
         <Text>{habutton?.name}</Text>
-        <TouchableOpacity onPress={() => console.log("pressed")}>
-          <Avatar.Icon style={styles.icon} icon={habutton?.icon as string} size={196} color="white" />
+        <TouchableOpacity onPress={async () => {
+          const action = await AsyncStorage.getItem("action");
+          sendMessage(callService("homeassistant", "turn_on", undefined, { entity_id: habutton?.entity_id }));
+        }}>
+          <Avatar.Icon
+            style={styles.icon}
+            icon={habutton?.icon as string}
+            size={196}
+            color="white"
+          />
         </TouchableOpacity>
         <Text>{habutton?.entity_id}</Text>
         <FAB
