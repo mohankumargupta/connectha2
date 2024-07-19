@@ -6,23 +6,21 @@ import { useEffect, useState } from 'react';
 import * as AuthSession from 'expo-auth-session';
 import { websocketconnect } from './common/websocketconnect';
 import { useWebsocketManager } from '@/stores/websocket';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-//WebBrowser.maybeCompleteAuthSession();
+const route_options = {
+  pending: 'pending',
+  login: 'login',
+  configure: 'configure',
+  home: 'home'
+} as const;
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-//SplashScreen.preventAutoHideAsync();
-
-/*
-type HomeAssistantURL = {
-  url: string
-};
-*/
+type RouteDestination = keyof typeof route_options;
 
 export default function index() {
-
   const [access_token, setAccessToken] = useState<string | undefined>(undefined);
-  const [valid, setValid] = useState<boolean | undefined>(undefined);
   const connect = useWebsocketManager((state) => state.connect);
+  const [destination, setDestination] = useState<RouteDestination>("pending");
 
   async function get_value_from_store(key: string): Promise<string | null> {
     let result = await SecureStore.getItemAsync(key);
@@ -33,19 +31,19 @@ export default function index() {
     await SecureStore.setItemAsync(key, value);
   }
 
-
-
   async function previous_login() {
     const refresh_token = await get_value_from_store(AuthData.refresh_token);
     const ha_url = await get_value_from_store(AuthData.ha_url);
+
+    console.log(refresh_token);
+    console.log(ha_url);
+
+    if (!refresh_token || !ha_url) {
+      console.log("either refresh_token and ha_url empty");
+      setDestination('login');
+    }
+
     if (refresh_token && ha_url) {
-      //console.log("refresh token:", refresh_token);
-      //console.log("ha_url", ha_url);
-
-      if (refresh_token === null || ha_url === null) {
-        setValid(false);
-      }
-
       try {
         const tokenResult = await AuthSession.refreshAsync({
           clientId: "https://mohankumargupta.github.io",
@@ -54,57 +52,58 @@ export default function index() {
           tokenEndpoint: `${ha_url}/auth/token`,
         },
         );
-        //console.log(tokenResult);
 
         if (tokenResult && tokenResult.accessToken) {
           await saveItem(AuthData.access_token, tokenResult.accessToken);
-          //let boo = await get_value_from_store(AuthData.access_token);
-          //console.log("access token from store: ", boo);
           connect(ha_url, tokenResult.accessToken);
-          setValid(true);
+
+          const entity_id = await AsyncStorage.getItem("entity_id");
+          const name = await AsyncStorage.getItem("friendly_name");
+          const action = await AsyncStorage.getItem("action");
+          const icon = await AsyncStorage.getItem("icon");
+
+          if (entity_id && name && action && icon) {
+            setDestination('home');
+          }
+
+          else {
+            setDestination('configure');
+          }
         }
       }
 
       catch (error) {
-        setValid(false);
+        setDestination('login');
       }
     }
-    else {
-      setValid(false);
-    }
-
   }
 
   useEffect(() => {
     previous_login();
-    // Call the function when the component mounts
-    //get_value_from_store(AuthData.refresh_token);
-    //get_value_from_store(AuthData.ha_url);
-
   }, []);
 
-
-  /*
-  return (
-    <></>
-  );
-  */
-
-
-  if (valid === undefined) {
-    return <></>
+  switch (destination) {
+    case 'pending':
+      return <></>;
+      break;
+    case 'login':
+      return (
+        <Redirect href="/login"></Redirect>
+      );
+      break;
+    case 'configure':
+      return (
+        <Redirect href="/home/entitiesList"></Redirect>
+      );
+      break;
+    case 'home':
+      return (
+        <Redirect href="/home"></Redirect>
+      );
+      break;
   }
-  else if (valid) {
-    return (
-      <Redirect href="/home/entitiesList"></Redirect>
-    );
-  }
-
-  else {
-    return (
-      <Redirect href="/login"></Redirect>
-    );
-  }
-
 }
+
+
+
 
