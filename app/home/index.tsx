@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import * as SecureStore from 'expo-secure-store';
-import { Avatar, PaperProvider } from 'react-native-paper';
-import { useLocalSearchParams } from 'expo-router';
+import { Avatar, FAB, PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import { Routes } from '@/constants/routes';
 
 async function getValue(key: string) {
   let result = await SecureStore.getItemAsync(key);
@@ -51,6 +52,13 @@ export default function home() {
           <Avatar.Icon style={styles.icon} icon={habutton?.icon as string} size={196} color="white" />
         </TouchableOpacity>
         <Text>{habutton?.entity_id}</Text>
+        <FAB
+          style={styles.fab}
+          icon="pencil"
+          onPress={() => {
+            router.navigate(Routes.entities);
+          }}
+        />
       </View>
     </PaperProvider>
   )
@@ -64,6 +72,11 @@ const styles = StyleSheet.create({
   },
   icon: {
     backgroundColor: "#2196f3"
-  }
-
+  },
+  fab: {
+    position: "absolute",
+    bottom: 0,
+    alignSelf: "center",
+    margin: 16,
+  },
 });

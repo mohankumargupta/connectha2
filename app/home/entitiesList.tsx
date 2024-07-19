@@ -1,5 +1,5 @@
 import { FlatList, Text, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 // You can import supported modules from npm
 import { List, Searchbar, PaperProvider } from 'react-native-paper';
@@ -10,7 +10,7 @@ import * as SecureStore from 'expo-secure-store';
 import { states } from '@/types/messages';
 import { Entity, EntityFromHA } from '@/types/entities';
 import ListSearch, { FlatListItem, ListItemProps } from '@/components/ListSearch';
-import { router } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import { Routes } from '@/constants/routes';
 
 
@@ -44,12 +44,15 @@ export default function EntitiesList() {
     const connect = useWebsocketManager((state) => state.connect);
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
     const subscribe = useWebsocketManager((state) => state.subscribe);
-
     const [entities, setEntities] = useState<Array<FlatListItem>>([]);
+    const navigation = useNavigation();
+    const isFocused = navigation.isFocused;
 
     useEffect(() => {
         async function load() {
+
             const access_token = await getValue(AuthData.access_token);
+            console.log(access_token);
             if (access_token) {
                 subscribe((event) => {
                     const data = JSON.parse(event.data);
@@ -77,8 +80,9 @@ export default function EntitiesList() {
         }
 
         load();
+        console.log(navigation.getState());
 
-    }, []);
+    }, [isFocused]);
 
 
     return (
