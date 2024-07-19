@@ -44,6 +44,7 @@ export default function EntitiesList() {
     const connect = useWebsocketManager((state) => state.connect);
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
     const subscribe = useWebsocketManager((state) => state.subscribe);
+    const unsubscribe = useWebsocketManager((state) => state.unsubscribe);
     const [entities, setEntities] = useState<Array<FlatListItem>>([]);
     const navigation = useNavigation();
     const isFocused = navigation.isFocused;
@@ -82,7 +83,10 @@ export default function EntitiesList() {
 
         load();
         console.log(navigation.getState());
-
+        return () => {
+            console.log("lost focus in entitieslist");
+            unsubscribe();
+        };
     }, [isFocused]);
 
 

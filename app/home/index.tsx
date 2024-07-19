@@ -28,6 +28,7 @@ export default function home() {
   const navigation = useNavigation();
   const isFocused = navigation.isFocused;
   const sendMessage = useWebsocketManager((state) => state.sendMessage);
+  const unsubscribe = useWebsocketManager((state) => state.unsubscribe);
 
   async function load() {
     const entity_id = await AsyncStorage.getItem("entity_id");
@@ -48,7 +49,10 @@ export default function home() {
 
   useEffect(() => {
     load();
-
+    return () => {
+      console.log("lost focus in entitieslist");
+      unsubscribe();
+    };
   }, [isFocused]);
 
   return (

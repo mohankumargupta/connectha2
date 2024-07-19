@@ -8,6 +8,7 @@ interface WebSocketInterface {
     connect: (ha_url: string, access_token: string) => void,
     sendMessage: (message: MessageBase) => void,
     subscribe: (handler: (event: MessageEvent<any>) => void) => void,
+    unsubscribe: () => void,
 }
 
 function connected(socket: WebSocket|undefined): boolean {
@@ -64,5 +65,12 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
     },
     subscribe:  (handler: (event: MessageEvent<any>) => void) => {
         get().messageHandlers.add(handler);
-    }
+    },
+    unsubscribe: () => {
+        const messageHandlers = get().messageHandlers;
+        const lastCallback = [...messageHandlers].pop();
+        if (lastCallback) {
+            messageHandlers.delete(lastCallback);
+        }
+    },
   }))
