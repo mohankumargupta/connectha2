@@ -243,6 +243,16 @@ export function ping() {
   };
 }
 
+export function subscribe_trigger(entity_id: string) {
+  return {
+    type: "subscribe_trigger",
+    trigger: {
+        platform: "state",
+        entity_id: entity_id,
+    }
+  };
+}
+
 export function error(code: Error, message: string) {
   return {
     type: "result",

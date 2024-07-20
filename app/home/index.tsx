@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useNavigation } from 'expo-router';
 import { Routes } from '@/constants/routes';
 import { useWebsocketManager } from '@/stores/websocket';
-import { callService } from '@/types/messages';
+import { callService, subscribe_trigger } from '@/types/messages';
 
 async function getValue(key: string) {
   let result = await SecureStore.getItemAsync(key);
@@ -20,8 +20,6 @@ type HAButton = {
   action: string,
   icon: string,
 };
-
-
 
 export default function home() {
   const [habutton, setHAbutton] = useState<HAButton>();
@@ -46,6 +44,19 @@ export default function home() {
     }
 
   }
+
+  async function _subscribe_trigger() {
+    const entity_id = await AsyncStorage.getItem("entity_id");
+    if (entity_id) {
+      const message = subscribe_trigger(entity_id);
+      sendMessage(message);
+    }
+
+  }
+
+  useEffect(() => {
+
+  }, []);
 
   useEffect(() => {
     load();

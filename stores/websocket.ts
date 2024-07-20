@@ -6,9 +6,10 @@ interface WebSocketInterface {
     messageHandlers: Set<(event: MessageEvent<any>) => void>,
     id: number,
     connect: (ha_url: string, access_token: string) => void,
-    sendMessage: (message: MessageBase) => void,
+    sendMessage: (message: MessageBase) => number,
     subscribe: (handler: (event: MessageEvent<any>) => void) => void,
     unsubscribe: () => void,
+
 }
 
 function connected(socket: WebSocket|undefined): boolean {
@@ -51,7 +52,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
             }; 
         });
     },
-    sendMessage: (message: MessageBase) => {
+    sendMessage: (message: MessageBase): number => {
        const wsi = get();
        //console.log("send message");
        if (connected(wsi.socket)) {
@@ -60,8 +61,9 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
         message.id = message.id ? message.id: newid;
         wsi.socket!.send(JSON.stringify(message));
         set((state)=>({id: newid}));
-       
+        return newid;
        }
+       return 0;
     },
     subscribe:  (handler: (event: MessageEvent<any>) => void) => {
         get().messageHandlers.add(handler);

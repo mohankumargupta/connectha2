@@ -12,7 +12,7 @@ import { Entity, EntityFromHA } from '@/types/entities';
 import ListSearch, { FlatListItem, ListItemProps } from '@/components/ListSearch';
 import { router, useNavigation, useRouter } from 'expo-router';
 import { Routes } from '@/constants/routes';
-
+import useStateCallback from '../common/usestatecallback';
 
 async function getValue(key: string) {
     let result = await SecureStore.getItemAsync(key);
@@ -20,48 +20,50 @@ async function getValue(key: string) {
     return result;
 }
 
-const EntityItem = memo(({ item }: ListItemProps) => (
-    <List.Item
-        title={item.key}
-        description={item.name}
-        left={() => <MaterialCommunityIcons name="play" size={24} color="black" />}
-        onPress={() => {
-            router.push({
-                pathname: Routes.icons, params: {
-                    entity_id: item.key,
-                    friendly_name: item.name,
-                }
-            });
-        }}
-    />
-));
-
-const renderItem = ({ item }: ListItemProps) => {
-    return <EntityItem item={item} />;
-};
-
 export default function EntitiesList() {
     const connect = useWebsocketManager((state) => state.connect);
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
     const subscribe = useWebsocketManager((state) => state.subscribe);
     const unsubscribe = useWebsocketManager((state) => state.unsubscribe);
     const [entities, setEntities] = useState<Array<FlatListItem>>([]);
+    const [latestEntityID, setLatestEntityID] = useState<number | undefined>(undefined);
     const navigation = useNavigation();
     const isFocused = navigation.isFocused;
+    const [messageid, setmessageid] = useStateCallback(0);
+
+
+    const EntityItem = memo(({ item }: ListItemProps) => (
+        <List.Item
+            title={item.key}
+            description={item.name}
+            left={() => <MaterialCommunityIcons name="play" size={24} color="black" />}
+            onPress={() => {
+                router.push({
+                    pathname: Routes.icons, params: {
+                        entity_id: item.key,
+                        friendly_name: item.name,
+                    }
+                });
+            }}
+        />
+    ));
+
+    const renderItem = ({ item }: ListItemProps) => {
+        return <EntityItem item={item} />;
+    };
 
     useEffect(() => {
         async function load() {
-
             const access_token = await getValue(AuthData.access_token);
             if (access_token) {
                 subscribe((event) => {
                     const data = JSON.parse(event.data);
-                    if (data.type === "auth_ok") {
-                        //sendMessage(states());
-                    }
 
-                    else if (data.type === "result") {
-                        const new_entities = data.result.map((item: EntityFromHA): FlatListItem => {
+
+                    if (data.type === "result" && data.result && "map" in data.result) {
+
+                        console.log(`here: ${data.id}`);
+                        const new_entities: Array<FlatListItem> = data.result.map((item: EntityFromHA): FlatListItem => {
                             return {
                                 "key": item.entity_id,
                                 "name": item.attributes.friendly_name,
@@ -73,26 +75,33 @@ export default function EntitiesList() {
                         //console.log(new_entities[0]);
                         //console.log(new_entities);
                         setEntities(new_entities);
+                        setLatestEntityID(data.id);
                     }
                 });
-                sendMessage(states());
-
-
+                const id = sendMessage(states());
+                //setmessageid(previous_id => id);
+                setmessageid(id);
+                console.log(`states send message id: ${id}`);
+                console.log(`states send message id: ${messageid}`);
             }
         }
 
         load();
         console.log(navigation.getState());
         return () => {
-            console.log("lost focus in entitieslist");
-            unsubscribe();
+            console.log("empty useffect called");
+            //unsubscribe();
         };
+    }, []);
+
+    useEffect(() => {
+        console.log("isfocused useeffect called");
     }, [isFocused]);
 
 
     return (
         <SafeAreaView style={styles.container}>
-            <ListSearch entities={entities} placeholder='Search Entities' renderItem={renderItem}></ListSearch>
+            {messageid === latestEntityID && <ListSearch entities={entities} placeholder='Search Entities' renderItem={renderItem}></ListSearch>}
         </SafeAreaView>
     );
 }
