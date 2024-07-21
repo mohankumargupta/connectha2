@@ -52,46 +52,45 @@ export default function EntitiesList() {
         return <EntityItem item={item} />;
     };
 
-    useEffect(() => {
-        async function load() {
-            const access_token = await getValue(AuthData.access_token);
-            if (access_token) {
-                subscribe((event) => {
-                    const data = JSON.parse(event.data);
+    async function load() {
+        const access_token = await getValue(AuthData.access_token);
+        if (access_token) {
+            subscribe((event) => {
+                const data = JSON.parse(event.data);
 
 
-                    if (data.type === "result" && data.result && "map" in data.result) {
+                if (data.type === "result" && data.result && "map" in data.result) {
 
-                        console.log(`here: ${data.id}`);
-                        const new_entities: Array<FlatListItem> = data.result.map((item: EntityFromHA): FlatListItem => {
-                            return {
-                                "key": item.entity_id,
-                                "name": item.attributes.friendly_name,
-                                "icon": "play"
-                            };
-                        }).sort(
-                            (a: FlatListItem, b: FlatListItem) => a.key.localeCompare(b.key)
-                        );
-                        //console.log(new_entities[0]);
-                        //console.log(new_entities);
-                        setEntities(new_entities);
-                        setLatestEntityID(data.id);
-                    }
-                });
-                const id = sendMessage(states());
-                //setmessageid(previous_id => id);
-                setmessageid(id);
-                console.log(`states send message id: ${id}`);
-                console.log(`states send message id: ${messageid}`);
-            }
+                    console.log(`here: ${data.id}`);
+                    const new_entities: Array<FlatListItem> = data.result.map((item: EntityFromHA): FlatListItem => {
+                        return {
+                            "key": item.entity_id,
+                            "name": item.attributes.friendly_name,
+                            "icon": "play"
+                        };
+                    }).sort(
+                        (a: FlatListItem, b: FlatListItem) => a.key.localeCompare(b.key)
+                    );
+                    //console.log(new_entities[0]);
+                    //console.log(new_entities);
+                    setEntities(new_entities);
+                    setLatestEntityID(data.id);
+                }
+            });
+            const id = sendMessage(states());
+            //setmessageid(previous_id => id);
+            setmessageid(id);
+            console.log(`states send message id: ${id}`);
+            console.log(`states send message id: ${messageid}`);
         }
+    }
 
+    useEffect(() => {
+        console.log("useffect empty called");
         load();
         console.log(navigation.getState());
         return () => {
             console.log("empty useffect cleanup called");
-
-            //unsubscribe();
         };
     }, []);
 
