@@ -41,6 +41,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "900a7575-8d21-4be4-9e95-fd96f4931d6a"
+      }
+    },
+    "owner": "raspberrypisig"
   }
 }
