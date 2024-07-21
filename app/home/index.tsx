@@ -62,7 +62,7 @@ export default function home() {
     load();
     return () => {
       console.log("lost focus in entitieslist");
-      unsubscribe();
+      //unsubscribe();
     };
   }, [isFocused]);
 

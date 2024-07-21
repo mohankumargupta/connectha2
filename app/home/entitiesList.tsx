@@ -89,13 +89,17 @@ export default function EntitiesList() {
         load();
         console.log(navigation.getState());
         return () => {
-            console.log("empty useffect called");
+            console.log("empty useffect cleanup called");
+
             //unsubscribe();
         };
     }, []);
 
     useEffect(() => {
         console.log("isfocused useeffect called");
+        return () => {
+            console.log("isfocused useeffect cleanup called");
+        }
     }, [isFocused]);
 
 
