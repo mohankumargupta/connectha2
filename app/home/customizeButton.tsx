@@ -1,7 +1,7 @@
-import { Text, SafeAreaView, StyleSheet } from 'react-native';
+import { Text, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useEffect, useState } from 'react';
 
-import { Avatar, Button, SegmentedButtons } from 'react-native-paper';
+import { Avatar, Button, SegmentedButtons, Switch } from 'react-native-paper';
 import { router, useLocalSearchParams } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,6 +13,7 @@ export default function CustomizeButton() {
 
     const [value, setValue] = useState('toggle');
     const { icon, entity_id, friendly_name } = useLocalSearchParams<{ icon: string, entity_id: string, friendly_name: string }>();
+    const [live, setLive] = useState(false);
 
     useEffect(() => {
         //console.log(icon);
@@ -40,6 +41,14 @@ export default function CustomizeButton() {
                     { value: 'turn_off', label: 'Turn Off' },
                 ]}
             />
+            <Text style={styles.paragraph}>Live Updates</Text>
+
+            <View style={styles.switch}>
+                <Switch
+                    value={live}
+                    onValueChange={(val) => setLive(val)}
+                />
+            </View>
             <Button
                 mode="contained"
                 style={styles.button}
@@ -48,6 +57,7 @@ export default function CustomizeButton() {
                     await AsyncStorage.setItem("friendly_name", friendly_name as string);
                     await AsyncStorage.setItem("action", value);
                     await AsyncStorage.setItem("icon", icon as string);
+                    await AsyncStorage.setItem("live", live.toString());
                     router.push({
                         pathname: Routes.home,
                         params: {
@@ -87,5 +97,8 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 24,
+    },
+    switch: {
+        alignItems: 'center',     // Center horizontally
     }
 });

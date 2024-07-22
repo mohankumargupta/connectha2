@@ -9,7 +9,6 @@ interface WebSocketInterface {
     sendMessage: (message: MessageBase) => number,
     subscribe: (handler: (event: MessageEvent<any>) => void) => void,
     unsubscribe: () => void,
-
 }
 
 function connected(socket: WebSocket|undefined): boolean {

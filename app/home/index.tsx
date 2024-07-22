@@ -27,12 +27,15 @@ export default function home() {
   const isFocused = navigation.isFocused;
   const sendMessage = useWebsocketManager((state) => state.sendMessage);
   const unsubscribe = useWebsocketManager((state) => state.unsubscribe);
+  const subscribe = useWebsocketManager((state) => state.subscribe);
+  const [onOff, setOnOff] = useState(false);
 
   async function load() {
     const entity_id = await AsyncStorage.getItem("entity_id");
     const name = await AsyncStorage.getItem("friendly_name");
     const action = await AsyncStorage.getItem("action");
     const icon = await AsyncStorage.getItem("icon");
+    const live = await AsyncStorage.getItem("live");
     if (entity_id && name && action && icon) {
       setHAbutton({
         entity_id,
@@ -40,8 +43,34 @@ export default function home() {
         action,
         icon
       });
+      if (live?.toLocaleLowerCase() === "true") {
+        subscribe(event => {
+          const data = JSON.parse(event.data);
+          //console.log(data);
+          if (data.event) {
+
+            if (data.event.variables.trigger.entity_id === entity_id) {
+              //console.log("mohan");
+              const liveState = data.event.variables.trigger.to_state.state;
+              if (liveState === "on") {
+                setOnOff(true);
+              }
+              else {
+                setOnOff(false);
+              }
+
+              console.log(data.event.variables.trigger.to_state.state);
+            }
+
+
+          }
+
+        });
+        sendMessage(subscribe_trigger(entity_id));
+      }
 
     }
+
 
   }
 
@@ -78,7 +107,7 @@ export default function home() {
             style={styles.icon}
             icon={habutton?.icon as string}
             size={196}
-            color="white"
+            color={onOff ? "yellow" : "white"}
           />
         </TouchableOpacity>
         <Text>{habutton?.entity_id}</Text>
