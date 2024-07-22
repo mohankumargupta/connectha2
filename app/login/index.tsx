@@ -12,7 +12,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import {AuthRequest, DiscoveryDocument} from 'expo-auth-session';
+import { AuthRequest, DiscoveryDocument } from 'expo-auth-session';
 import { useEffect } from 'react';
 
 
@@ -32,20 +32,20 @@ export default function index() {
   //const globalParams = useGlobalSearchParams();
   //console.log(JSON.stringify(navigation.getState()))
   //console.log(JSON.stringify(globalParams));
- 
+
   const schema = z.object({
-    url: z.string({required_error: "required", message: "moomoo"}).url({message: "url not ok. Must start with http:// or https://"}),
+    url: z.string({ required_error: "required", message: "moomoo" }).url({ message: "url not ok. Must start with http:// or https://" }),
   });
 
   type Schema = z.infer<typeof schema>
 
-  const { control, handleSubmit, formState: {errors} } = useForm<Schema>(
+  const { control, handleSubmit, formState: { errors } } = useForm<Schema>(
     {
       resolver: zodResolver(schema)
     }
-  );  
+  );
 
-  const submit = handleSubmit(({url: data}:HomeAssistantURL) => {
+  const submit = handleSubmit(({ url: data }: HomeAssistantURL) => {
     //console.log(data);
     if (errors.url) {
       return;
@@ -54,7 +54,7 @@ export default function index() {
       clientId: HOMEASSISTANT_CLIENTID,
       redirectUri: HOMEASSISTANT_REDIRECT_URI,
       state: data,
-    });      
+    });
 
     const discovery: DiscoveryDocument = {
       authorizationEndpoint: `${data}/auth/authorize`,
@@ -65,46 +65,46 @@ export default function index() {
   });
 
   return (
-      <PaperProvider>
-        <View style={styles.container}>
-          <Text style={styles.heading}>Connect To Home Assistant</Text>
-          
-          <Controller 
-             name = "url"
-             control={control}
-             defaultValue='http://192.168.20.98:8123'
-             rules={{
-              required: true,
-            }}
-            render={({field: {onChange, value}, fieldState: {error}} ) => (
-              <>
-              <TextInput 
+    <PaperProvider>
+      <View style={styles.container}>
+        <Text style={styles.heading}>Connect Home Assistant</Text>
+        <Controller
+          name="url"
+          control={control}
+          defaultValue='http://192.168.20.98:8123'
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <>
+              <TextInput
                 label="Home Assistant URL"
                 //onChange={onChange}
                 onChangeText={onChange}
                 value={value}
+              //left={<TextInput.Affix text="http://" />}
               >
               </TextInput>
               {error && <Text style={styles.error}>{error.message}</Text>}
-              </>        
-            )}             
-          >
-          </Controller>
-          
-          
-          <Button style={styles.button}   mode='contained' onPress={()=>{
-            submit();
-          }}>
-            Connect
-          </Button>
-        </View>
-      </PaperProvider>
-    );
-  
+            </>
+          )}
+        >
+        </Controller>
+
+
+        <Button style={styles.button} mode='contained' onPress={() => {
+          submit();
+        }}>
+          Connect
+        </Button>
+      </View>
+    </PaperProvider>
+  );
+
 
 }
 
-const styles =  StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     //paddingVertical: 50,
@@ -113,13 +113,13 @@ const styles =  StyleSheet.create({
     rowGap: 32
   },
 
-   heading: {
+  heading: {
     //marginVertical: 50,
-    fontSize: 32,
+    fontSize: 24,
     //marginBottom: 8
-   },
-   button: {
-    //marginVertical: 8
+  },
+  button: {
+    marginVertical: 8
   },
   error: {
     color: "red"

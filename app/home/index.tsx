@@ -8,11 +8,15 @@ import { Routes } from '@/constants/routes';
 import { useWebsocketManager } from '@/stores/websocket';
 import { callService, subscribe_trigger } from '@/types/messages';
 
+/*
 async function getValue(key: string) {
   let result = await SecureStore.getItemAsync(key);
   console.log(`${key}: ${result}`);
   return result;
 }
+*/
+
+
 
 type HAButton = {
   entity_id: string,
@@ -20,6 +24,9 @@ type HAButton = {
   action: string,
   icon: string,
 };
+
+
+
 
 export default function home() {
   const [habutton, setHAbutton] = useState<HAButton>();
@@ -46,11 +53,8 @@ export default function home() {
       if (live?.toLocaleLowerCase() === "true") {
         subscribe(event => {
           const data = JSON.parse(event.data);
-          //console.log(data);
           if (data.event) {
-
             if (data.event.variables.trigger.entity_id === entity_id) {
-              //console.log("mohan");
               const liveState = data.event.variables.trigger.to_state.state;
               if (liveState === "on") {
                 setOnOff(true);
@@ -58,22 +62,16 @@ export default function home() {
               else {
                 setOnOff(false);
               }
-
-              console.log(data.event.variables.trigger.to_state.state);
+              //console.log(data.event.variables.trigger.to_state.state);
             }
-
-
           }
-
         });
-        sendMessage(subscribe_trigger(entity_id));
       }
-
+      sendMessage(subscribe_trigger(entity_id));
     }
-
-
   }
 
+  /*
   async function _subscribe_trigger() {
     const entity_id = await AsyncStorage.getItem("entity_id");
     if (entity_id) {
@@ -82,6 +80,7 @@ export default function home() {
     }
 
   }
+  */
 
   useEffect(() => {
 
@@ -101,7 +100,7 @@ export default function home() {
         <Text>{habutton?.name}</Text>
         <TouchableOpacity onPress={async () => {
           const action = await AsyncStorage.getItem("action");
-          sendMessage(callService("homeassistant", "turn_on", undefined, { entity_id: habutton?.entity_id }));
+          sendMessage(callService("homeassistant", habutton?.action as string, undefined, { entity_id: habutton?.entity_id }));
         }}>
           <Avatar.Icon
             style={styles.icon}
