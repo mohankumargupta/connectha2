@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -37,7 +37,12 @@
           }
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      ["expo-font",
+       {
+          "fonts": ["node_modules/@expo-google-fonts/work-sans/WorkSans_400Regular.ttf"]
+       }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

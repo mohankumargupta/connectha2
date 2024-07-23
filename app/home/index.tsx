@@ -97,7 +97,6 @@ export default function home() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text>{habutton?.name}</Text>
         <TouchableOpacity onPress={async () => {
           const action = await AsyncStorage.getItem("action");
           sendMessage(callService("homeassistant", habutton?.action as string, undefined, { entity_id: habutton?.entity_id }));
@@ -109,7 +108,7 @@ export default function home() {
             color={onOff ? "yellow" : "white"}
           />
         </TouchableOpacity>
-        <Text>{habutton?.entity_id}</Text>
+        <Text style={styles.entityname}>{habutton?.name}</Text>
         <FAB
           style={styles.fab}
           icon="pencil"
@@ -140,5 +139,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignSelf: "center",
     margin: 16,
+  },
+  entityname: {
+    fontFamily: "WorkSans_400Regular",
+    fontSize: 32,
+    marginVertical: 32,
   },
 });

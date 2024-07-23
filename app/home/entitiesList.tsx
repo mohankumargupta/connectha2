@@ -61,7 +61,7 @@ export default function EntitiesList() {
 
                 if (data.type === "result" && data.result && "map" in data.result) {
 
-                    console.log(`here: ${data.id}`);
+                    //console.log(`here: ${data.id}`);
                     const new_entities: Array<FlatListItem> = data.result.map((item: EntityFromHA): FlatListItem => {
                         return {
                             "key": item.entity_id,
@@ -80,24 +80,24 @@ export default function EntitiesList() {
             const id = sendMessage(states());
             //setmessageid(previous_id => id);
             setmessageid(id);
-            console.log(`states send message id: ${id}`);
-            console.log(`states send message id: ${messageid}`);
+            //console.log(`states send message id: ${id}`);
+            //console.log(`states send message id: ${messageid}`);
         }
     }
 
     useEffect(() => {
-        console.log("useffect empty called");
+        //console.log("useffect empty called");
         load();
-        console.log(navigation.getState());
+        //console.log(navigation.getState());
         return () => {
             console.log("empty useffect cleanup called");
         };
     }, []);
 
     useEffect(() => {
-        console.log("isfocused useeffect called");
+        //console.log("isfocused useeffect called");
         return () => {
-            console.log("isfocused useeffect cleanup called");
+            //console.log("isfocused useeffect cleanup called");
         }
     }, [isFocused]);
 
