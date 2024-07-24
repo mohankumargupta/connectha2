@@ -11,7 +11,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "create-native-module": "npx create-expo-module@latest --local"
   },
   "jest": {
     "preset": "jest-expo"
