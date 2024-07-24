@@ -7,6 +7,8 @@ import * as AuthSession from 'expo-auth-session';
 import { websocketconnect } from './common/websocketconnect';
 import { useWebsocketManager } from '@/stores/websocket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '@/constants/Colors';
 
 const route_options = {
   pending: 'pending',
@@ -84,7 +86,16 @@ export default function index() {
 
   switch (destination) {
     case 'pending':
-      return <></>;
+      return (
+        <>
+          <LinearGradient
+            style={{ flex: 1 }}
+            colors={
+              [Colors.splashPrimary, Colors.splashSecondary]
+            }
+          ></LinearGradient>
+        </>
+      );
       break;
     case 'login':
       return (

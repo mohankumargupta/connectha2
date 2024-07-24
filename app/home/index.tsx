@@ -43,10 +43,11 @@ export default function home() {
     const action = await AsyncStorage.getItem("action");
     const icon = await AsyncStorage.getItem("icon");
     const live = await AsyncStorage.getItem("live");
-    if (entity_id && name && action && icon) {
+    const displayName = await AsyncStorage.getItem("displayName");
+    if (entity_id && name && action && icon && displayName) {
       setHAbutton({
         entity_id,
-        name,
+        name: displayName,
         action,
         icon
       });
