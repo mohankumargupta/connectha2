@@ -13,7 +13,9 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { AuthRequest, DiscoveryDocument } from 'expo-auth-session';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+
+import { hello } from '@/modules/nsd';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -63,6 +65,11 @@ export default function index() {
 
     authSession.promptAsync(discovery);
   });
+
+  useEffect(() => {
+    const message = hello();
+    console.log(message);
+  }, []);
 
   return (
     <PaperProvider>
