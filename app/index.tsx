@@ -9,6 +9,10 @@ import { useWebsocketManager } from '@/stores/websocket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/Colors';
+import { View } from 'react-native';
+import { SplashScreen } from 'expo-router';
+
+SplashScreen.preventAutoHideAsync();
 
 const route_options = {
   pending: 'pending',
@@ -42,6 +46,7 @@ export default function index() {
 
     if (!refresh_token || !ha_url) {
       console.log("either refresh_token and ha_url empty");
+      setTimeout(() => { SplashScreen.hideAsync(); }, 300);
       setDestination('login');
     }
 
@@ -65,16 +70,19 @@ export default function index() {
           const icon = await AsyncStorage.getItem("icon");
 
           if (entity_id && name && action && icon) {
+            setTimeout(() => { SplashScreen.hideAsync(); }, 300);
             setDestination('home');
           }
 
           else {
+            setTimeout(() => { SplashScreen.hideAsync(); }, 300);
             setDestination('configure');
           }
         }
       }
 
       catch (error) {
+        setTimeout(() => { SplashScreen.hideAsync(); }, 300);
         setDestination('login');
       }
     }
@@ -87,14 +95,9 @@ export default function index() {
   switch (destination) {
     case 'pending':
       return (
-        <>
-          <LinearGradient
-            style={{ flex: 1 }}
-            colors={
-              [Colors.splashPrimary, Colors.splashSecondary]
-            }
-          ></LinearGradient>
-        </>
+        <View style={{ flex: 1, backgroundColor: "#344E41" }}>
+
+        </View>
       );
       break;
     case 'login':
