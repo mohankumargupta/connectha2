@@ -25,6 +25,9 @@ export function configureDiscovery(serviceType: string, listener: (event: Servic
   return emitter.addListener<Service>('onServiceDiscovered', listener);
 }
 
+export function hello(): string {
+  return ExpoNsdModule.hello();
+}
 
 export { Service };
 

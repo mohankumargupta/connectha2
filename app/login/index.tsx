@@ -15,7 +15,7 @@ import * as z from 'zod';
 import { AuthRequest, DiscoveryDocument } from 'expo-auth-session';
 import { useCallback, useEffect } from 'react';
 
-import { configureDiscovery, startDiscovery } from '@/modules/nsd';
+import { hello, configureDiscovery, startDiscovery } from '@/modules/nsd';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -67,7 +67,10 @@ export default function index() {
   });
 
   useEffect(() => {
-    const sub = configureDiscovery("_http._tcp", (service) => {
+    const hi = hello();
+    console.log(hi);
+
+    const sub = configureDiscovery("_home-assistant._tcp", (service) => {
       console.log(service);
     })
 

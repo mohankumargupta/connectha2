@@ -12,7 +12,8 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "create-native-module": "npx create-expo-module@latest --local"
+    "create-native-module": "npx create-expo-module@latest --local",
+    "log": "npx react-native log-android"
   },
   "jest": {
     "preset": "jest-expo"
