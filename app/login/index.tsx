@@ -6,16 +6,16 @@
 import 'react-native-reanimated';
 
 //import { useColorScheme } from '@/hooks/useColorScheme';
-import { Button, PaperProvider, TextInput } from 'react-native-paper';
+import { Button, PaperProvider, Subheading, TextInput } from 'react-native-paper';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { AuthRequest, DiscoveryDocument } from 'expo-auth-session';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { hello, configureDiscovery, startDiscovery } from '@/modules/nsd';
+import { hello, configureDiscovery, startDiscovery, Service } from '@/modules/nsd';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -29,11 +29,7 @@ const HOMEASSISTANT_CLIENTID = "https://mohankumargupta.github.io";
 const HOMEASSISTANT_REDIRECT_URI = "https://mohankumargupta.github.io/redirect/bigbutton.html";
 
 export default function index() {
-
-  //const navigation = useNavigation()
-  //const globalParams = useGlobalSearchParams();
-  //console.log(JSON.stringify(navigation.getState()))
-  //console.log(JSON.stringify(globalParams));
+  const [services, SetServices] = useState<Array<Service>>([]);
 
   const schema = z.object({
     url: z.string({ required_error: "required", message: "moomoo" }).url({ message: "url not ok. Must start with http:// or https://" }),
@@ -67,13 +63,10 @@ export default function index() {
   });
 
   useEffect(() => {
-    const hi = hello();
-    console.log(hi);
-
     const sub = configureDiscovery("_home-assistant._tcp", (service) => {
       console.log(service);
+      SetServices([...services, service]);
     })
-
     startDiscovery();
     return () => sub.remove();
   }, []);
@@ -111,6 +104,20 @@ export default function index() {
         }}>
           Connect
         </Button>
+
+        {services.length > 0 &&
+          <Subheading>HA on Local Network</Subheading>
+        }
+
+        {
+          services.length > 0 &&
+          services.map((service) =>
+            <View key={service.address + service.port}>
+              <Text>Address: {service.address}</Text>
+              <Text>Port: {service.port}</Text>
+            </View>
+          )
+        }
       </View>
     </PaperProvider>
   );
