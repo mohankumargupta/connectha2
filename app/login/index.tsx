@@ -1,149 +1,202 @@
-//import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-//import { useFonts } from 'expo-font';
-//import { useNavigation, useGlobalSearchParams } from 'expo-router';
-//import * as SplashScreen from 'expo-splash-screen';
-//import { useEffect } from 'react';
-import 'react-native-reanimated';
+import React, { useEffect, useState } from 'react';
+import {
+    StyleSheet,
+    SafeAreaView,
+    ScrollView,
+    View,
+    Text,
+    TouchableOpacity,
+    Switch,
+    Image,
 
-//import { useColorScheme } from '@/hooks/useColorScheme';
-import { Button, PaperProvider, Subheading, TextInput } from 'react-native-paper';
-import { StyleSheet, Text, View } from 'react-native';
+} from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
+import { TextInput } from 'react-native-paper';
+import { configureDiscovery, startDiscovery, Service } from '@/modules/nsd';
 
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { AuthRequest, DiscoveryDocument } from 'expo-auth-session';
-import { useCallback, useEffect, useState } from 'react';
-
-import { hello, configureDiscovery, startDiscovery, Service } from '@/modules/nsd';
-
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-//SplashScreen.preventAutoHideAsync();
-
-type HomeAssistantURL = {
-  url: string
-};
-
-const HOMEASSISTANT_CLIENTID = "https://mohankumargupta.github.io";
-const HOMEASSISTANT_REDIRECT_URI = "https://mohankumargupta.github.io/redirect/bigbutton.html";
-
-export default function index() {
-  const [services, SetServices] = useState<Array<Service>>([]);
-
-  const schema = z.object({
-    url: z.string({ required_error: "required", message: "moomoo" }).url({ message: "url not ok. Must start with http:// or https://" }),
-  });
-
-  type Schema = z.infer<typeof schema>
-
-  const { control, handleSubmit, formState: { errors } } = useForm<Schema>(
-    {
-      resolver: zodResolver(schema)
-    }
-  );
-
-  const submit = handleSubmit(({ url: data }: HomeAssistantURL) => {
-    //console.log(data);
-    if (errors.url) {
-      return;
-    }
-    const authSession = new AuthRequest({
-      clientId: HOMEASSISTANT_CLIENTID,
-      redirectUri: HOMEASSISTANT_REDIRECT_URI,
-      state: data,
+export default function Example() {
+    const [form, setForm] = useState({
+        emailNotifications: true,
+        pushNotifications: false,
     });
+    const [urlScheme, setUrlScheme] = useState('http');
+    const [ha, setHA] = useState('')
+    const [services, SetServices] = useState<Array<Service>>([]);
 
-    const discovery: DiscoveryDocument = {
-      authorizationEndpoint: `${data}/auth/authorize`,
-      tokenEndpoint: `${data}/auth/token`,
-    };
+    useEffect(() => {
+        const sub = configureDiscovery("_home-assistant._tcp", (service) => {
+            console.log(service);
+            SetServices([...services, service]);
+        })
+        startDiscovery();
+        return () => sub.remove();
+    }, []);
 
-    authSession.promptAsync(discovery);
-  });
-
-  useEffect(() => {
-    const sub = configureDiscovery("_home-assistant._tcp", (service) => {
-      console.log(service);
-      SetServices([...services, service]);
-    })
-    startDiscovery();
-    return () => sub.remove();
-  }, []);
-
-  return (
-    <PaperProvider>
-      <View style={styles.container}>
-        <Text style={styles.heading}>Connect Home Assistant</Text>
-        <Controller
-          name="url"
-          control={control}
-          defaultValue='http://192.168.20.98:8123'
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <>
-              <TextInput
-                label="Home Assistant URL"
-                //onChange={onChange}
-                onChangeText={onChange}
-                value={value}
-              //left={<TextInput.Affix text="http://" />}
-              >
-              </TextInput>
-              {error && <Text style={styles.error}>{error.message}</Text>}
-            </>
-          )}
-        >
-        </Controller>
-
-
-        <Button style={styles.button} mode='contained' onPress={() => {
-          submit();
-        }}>
-          Connect
-        </Button>
-
-        {services.length > 0 &&
-          <Subheading>HA on Local Network</Subheading>
-        }
-
-        {
-          services.length > 0 &&
-          services.map((service) =>
-            <View key={service.address + service.port}>
-              <Text>Address: {service.address}</Text>
-              <Text>Port: {service.port}</Text>
+    return (
+        <SafeAreaView style={{ flex: 1, flexBasis: 0, flexGrow: 1, flexShrink: 1, backgroundColor: '#dad7cd', marginTop: 36 }}>
+            <View style={styles.header}>
+                <Text numberOfLines={1} style={styles.headerTitle}>
+                    Find Home Assistant
+                </Text>
             </View>
-          )
-        }
-      </View>
-    </PaperProvider>
-  );
+            <View style={styles.content}>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>found on Local network</Text>
+                    <View style={styles.sectionBody}>
+                        {
+                            services.map((service, i) => {
+                                let classes: any = [styles.rowWrapper];
+                                if (i === 0) {
+                                    classes = [...classes, styles.rowFirst]
+                                }
+                                if (i === services.length - 1) {
+                                    classes = [...classes, styles.rowLast]
+                                }
+                                return (
+                                    <View key={i} style={classes}>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                // handle onPress
+                                            }}
+                                            style={styles.row}>
+                                            <Text style={styles.rowLabel}>{service.address}</Text>
+                                            <View style={styles.rowSpacer} />
+                                            <Feather
+                                                color="#bcbcbc"
+                                                name="chevron-right"
+                                                size={19} />
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            })
+                        }
+                    </View>
+                </View>
+
+            </View>
+            <View style={styles.content}>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Enter Details Manually</Text>
+                </View>
+            </View>
+            <View style={{ paddingHorizontal: 0 }}>
+                <View style={{ backgroundColor: "white", marginBottom: 24 }}>
+                    <Picker
+                        selectedValue={urlScheme}
+                        onValueChange={(itemValue, itemIndex) =>
+                            setUrlScheme(itemValue)
+
+                        }>
+                        <Picker.Item label="http://" value="http" />
+                        <Picker.Item label="https://" value="https" />
+                    </Picker>
+                </View>
+                <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 24 }}>{urlScheme}://</Text>
+                        <View>
+                            <TextInput style={{ backgroundColor: "#ffffff" }} value={ha} onChangeText={(val) => setHA(val)} />
+                        </View>
+                        <Text style={{ fontSize: 32, marginHorizontal: 8 }}>:</Text>
+                        <View>
+                            <TextInput style={{ backgroundColor: "#ffffff" }} value={ha} onChangeText={(val) => setHA(val)} />
+                        </View>
+                    </View>
+                </View>
+            </View>
 
 
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //paddingVertical: 50,
-    paddingHorizontal: 50,
-    justifyContent: "center",
-    rowGap: 32
-  },
-
-  heading: {
-    //marginVertical: 50,
-    fontSize: 24,
-    //marginBottom: 8
-  },
-  button: {
-    marginVertical: 8
-  },
-  error: {
-    color: "red"
-  }
-
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingHorizontal: 16,
+        marginTop: 24,
+    },
+    headerTitle: {
+        fontSize: 19,
+        fontWeight: '600',
+        color: '#000',
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: 0,
+        textAlign: 'center',
+    },
+    content: {
+        paddingHorizontal: 16,
+    },
+    section: {
+        paddingVertical: 12,
+    },
+    sectionTitle: {
+        margin: 8,
+        marginLeft: 12,
+        fontSize: 13,
+        letterSpacing: 0.33,
+        fontWeight: '500',
+        color: '#000000',
+        textTransform: 'uppercase',
+    },
+    sectionBody: {
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 1.41,
+        elevation: 2,
+    },
+    row: {
+        height: 44,
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        paddingRight: 12,
+    },
+    rowWrapper: {
+        paddingLeft: 16,
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderColor: '#f0f0f0',
+    },
+    rowFirst: {
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+    },
+    rowLabel: {
+        fontSize: 16,
+        letterSpacing: 0.24,
+        color: '#000',
+    },
+    rowSpacer: {
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: 0,
+    },
+    rowValue: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#ababab',
+        marginRight: 4,
+    },
+    rowLast: {
+        borderBottomLeftRadius: 12,
+        borderBottomRightRadius: 12,
+    },
+    rowLabelLogout: {
+        width: '100%',
+        textAlign: 'center',
+        fontWeight: '600',
+        color: '#dc2626',
+    },
 });
