@@ -14,6 +14,8 @@ import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { TextInput } from 'react-native-paper';
 import { configureDiscovery, startDiscovery, Service } from '@/modules/nsd';
+import { router } from 'expo-router';
+import { route_options } from '@/constants/routes';
 
 export default function Example() {
     const [form, setForm] = useState({
@@ -57,7 +59,14 @@ export default function Example() {
                                     <View key={i} style={classes}>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                // handle onPress
+                                                router.push(
+                                                    {
+                                                        pathname: route_options.connect,
+                                                        params: {
+                                                            url: `http://${service.address}:${service.port}`
+                                                        }
+                                                    }
+                                                )
                                             }}
                                             style={styles.row}>
                                             <Text style={styles.rowLabel}>{service.address}</Text>

@@ -6,5 +6,6 @@ export enum AuthData {
 }
 
 export enum AuthClient {
-    client_id = 'https://mohankumargupta.github.io'
+    client_id = 'https://mohankumargupta.github.io',
+    redirect_uri = 'https://mohankumargupta.github.io/redirect/bigbutton.html',
 }

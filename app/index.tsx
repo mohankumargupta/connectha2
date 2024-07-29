@@ -9,24 +9,16 @@ import { useWebsocketManager } from '@/stores/websocket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/Colors';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { SplashScreen } from 'expo-router';
+import { route_options, RouteDestination } from '@/constants/routes';
 
 SplashScreen.preventAutoHideAsync();
-
-const route_options = {
-  pending: 'pending',
-  login: 'login',
-  configure: 'configure',
-  home: 'home'
-} as const;
-
-type RouteDestination = keyof typeof route_options;
 
 export default function index() {
   const [access_token, setAccessToken] = useState<string | undefined>(undefined);
   const connect = useWebsocketManager((state) => state.connect);
-  const [destination, setDestination] = useState<RouteDestination>("pending");
+  const [destination, setDestination] = useState<RouteDestination>(route_options.pending);
 
   async function get_value_from_store(key: string): Promise<string | null> {
     let result = await SecureStore.getItemAsync(key);
@@ -46,11 +38,11 @@ export default function index() {
 
     if (!refresh_token || !ha_url) {
       console.log("either refresh_token and ha_url empty");
-      setTimeout(() => { SplashScreen.hideAsync(); }, 300);
-      setDestination('login');
+      setTimeout(() => { SplashScreen.hideAsync(); }, 2000);
+      router.replace(route_options.findha);
     }
 
-    if (refresh_token && ha_url) {
+    else if (refresh_token && ha_url) {
       try {
         const tokenResult = await AuthSession.refreshAsync({
           clientId: "https://mohankumargupta.github.io",
@@ -71,12 +63,14 @@ export default function index() {
 
           if (entity_id && name && action && icon) {
             setTimeout(() => { SplashScreen.hideAsync(); }, 300);
-            setDestination('home');
+            router.replace(route_options.home);
+            //setDestination(route_options.home);
           }
 
           else {
             setTimeout(() => { SplashScreen.hideAsync(); }, 300);
-            setDestination('configure');
+            router.replace(route_options.configure);
+            //setDestination(route_options.configure);
           }
         }
       }
@@ -96,10 +90,12 @@ export default function index() {
     case 'pending':
       return (
         <View style={{ flex: 1, backgroundColor: "#344E41" }}>
-
+          <Text>moo</Text>
         </View>
       );
       break;
+
+    /*
     case 'login':
       return (
         <Redirect href="/login"></Redirect>
@@ -115,6 +111,7 @@ export default function index() {
         <Redirect href="/home"></Redirect>
       );
       break;
+    */
   }
 }
 
