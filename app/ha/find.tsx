@@ -13,9 +13,15 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { TextInput } from 'react-native-paper';
-import { configureDiscovery, startDiscovery, Service } from '@/modules/nsd';
+//import { configureDiscovery, startDiscovery, Service } from '@/modules/nsd';
 import { router } from 'expo-router';
 import { route_options } from '@/constants/routes';
+
+type Service = {
+    address: string,
+    port: number,
+    name: string
+};
 
 export default function Example() {
     const [form, setForm] = useState({
@@ -24,8 +30,15 @@ export default function Example() {
     });
     const [urlScheme, setUrlScheme] = useState('http');
     const [ha, setHA] = useState('')
-    const [services, SetServices] = useState<Array<Service>>([]);
-
+    //const [services, SetServices] = useState<Array<Service>>([]);
+    const services: Array<Service> = [
+        {
+            name: "Home",
+            address: "192.168.20.98",
+            port: 8123,
+        }
+    ];
+    /*
     useEffect(() => {
         const sub = configureDiscovery("_home-assistant._tcp", (service) => {
             console.log(service);
@@ -34,6 +47,7 @@ export default function Example() {
         startDiscovery();
         return () => sub.remove();
     }, []);
+    */
 
     return (
         <SafeAreaView style={{ flex: 1, flexBasis: 0, flexGrow: 1, flexShrink: 1, backgroundColor: '#dad7cd', marginTop: 36 }}>

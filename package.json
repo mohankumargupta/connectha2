@@ -13,7 +13,8 @@
     "test": "jest --watchAll",
     "lint": "expo lint",
     "create-native-module": "npx create-expo-module@latest --local",
-    "log": "npx react-native log-android"
+    "log": "npx react-native log-android",
+    "logverbose": "adb logcat *:S ReactNative:V ReactNativeJS:V"
   },
   "jest": {
     "preset": "jest-expo"

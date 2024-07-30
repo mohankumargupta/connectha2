@@ -9,10 +9,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/Colors';
 import { Text, View } from 'react-native';
-import { SplashScreen } from 'expo-router';
+//import { SplashScreen } from 'expo-router';
 import { route_options, RouteDestination } from '@/constants/routes';
 
-SplashScreen.preventAutoHideAsync();
+//SplashScreen.preventAutoHideAsync();
 
 export default function index() {
   const [access_token, setAccessToken] = useState<string | undefined>(undefined);
@@ -37,7 +37,7 @@ export default function index() {
 
     if (!refresh_token || !ha_url) {
       console.log("either refresh_token and ha_url empty");
-      setTimeout(() => { SplashScreen.hideAsync(); }, 2000);
+      //setTimeout(() => { SplashScreen.hideAsync(); }, 2000);
       router.replace(route_options.findha);
     }
 
@@ -61,14 +61,14 @@ export default function index() {
           const icon = await AsyncStorage.getItem("icon");
 
           if (entity_id && name && icon) {
-            setTimeout(() => { SplashScreen.hideAsync(); }, 2000);
+            //setTimeout(() => { SplashScreen.hideAsync(); }, 2000);
             console.log("going home");
             router.replace(route_options.home);
             //setDestination(route_options.home);
           }
 
           else {
-            setTimeout(() => { SplashScreen.hideAsync(); }, 2000);
+            //setTimeout(() => { SplashScreen.hideAsync(); }, 2000);
             console.log("going configure");
             router.replace(route_options.configure);
             //setDestination(route_options.configure);
@@ -77,8 +77,9 @@ export default function index() {
       }
 
       catch (error) {
-        setTimeout(() => { SplashScreen.hideAsync(); }, 300);
+        //setTimeout(() => { SplashScreen.hideAsync(); }, 300);
         //setDestination('login');
+        console.log(error);
       }
     }
   }
