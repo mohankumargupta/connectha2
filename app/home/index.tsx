@@ -4,7 +4,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Avatar, FAB, PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useNavigation } from 'expo-router';
-import { Routes } from '@/constants/routes';
+import { route_options } from '@/constants/routes';
 import { useWebsocketManager } from '@/stores/websocket';
 import { callService, subscribe_trigger } from '@/types/messages';
 
@@ -44,11 +44,14 @@ export default function home() {
     const icon = await AsyncStorage.getItem("icon");
     const live = await AsyncStorage.getItem("live");
     const displayName = await AsyncStorage.getItem("displayName");
-    if (entity_id && name && action && icon && displayName) {
+
+    console.log(live);
+
+    if (entity_id && name && icon) {
       setHAbutton({
         entity_id,
-        name: displayName,
-        action,
+        name: displayName ?? name,
+        action: "homeassistant.toggle",
         icon
       });
       if (live?.toLocaleLowerCase() === "true") {
@@ -115,8 +118,8 @@ export default function home() {
           icon="pencil"
           onPress={() => {
             router.navigate({
-              pathname: Routes.entities, params: {
-                previousRoute: Routes.home,
+              pathname: route_options.entitiesList, params: {
+                previousRoute: route_options.home,
               }
             });
           }}

@@ -57,10 +57,10 @@ export default function index() {
 
           const entity_id = await AsyncStorage.getItem("entity_id");
           const name = await AsyncStorage.getItem("friendly_name");
-          const action = await AsyncStorage.getItem("action");
+          //const action = await AsyncStorage.getItem("action");
           const icon = await AsyncStorage.getItem("icon");
 
-          if (entity_id && name && action && icon) {
+          if (entity_id && name && icon) {
             setTimeout(() => { SplashScreen.hideAsync(); }, 2000);
             console.log("going home");
             router.replace(route_options.home);

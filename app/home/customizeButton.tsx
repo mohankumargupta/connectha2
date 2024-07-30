@@ -41,6 +41,12 @@ export default function CustomizeButton() {
                 mode="contained"
                 style={styles.button}
                 onPress={async e => {
+                    console.log(`entityid: ${entity_id}`);
+                    console.log(`name: ${friendly_name}`);
+                    console.log(`action: ${value}`);
+                    console.log(`icon: ${icon}`);
+                    console.log(`live: ${entity_id}`);
+                    console.log(`displayName: ${entity_id}`);
                     await AsyncStorage.setItem("entity_id", entity_id as string);
                     await AsyncStorage.setItem("friendly_name", friendly_name as string);
                     await AsyncStorage.setItem("action", value);
