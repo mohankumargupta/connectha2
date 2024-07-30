@@ -51,7 +51,7 @@ export default function home() {
       setHAbutton({
         entity_id,
         name: displayName ?? name,
-        action: "homeassistant.toggle",
+        action: "toggle",
         icon
       });
       if (live?.toLocaleLowerCase() === "true") {

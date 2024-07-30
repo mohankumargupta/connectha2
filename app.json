@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "BigButton:Home Assistant",
-    "slug": "connectha2",
-    "version": "1.0.0",
+    "slug": "BigButtonHA",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon1024x1024.png",
-    "scheme": "myapp",
+    "scheme": "bigbuttonha",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",

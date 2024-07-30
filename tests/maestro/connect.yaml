@@ -1,0 +1,10 @@
+appId: com.mohankumargupta.bigbuttonha
+---
+- launchApp:
+    appId: com.mohankumargupta.bigbuttonha
+    stopApp: true
+    clearState: true
+- waitForAnimationToEnd:
+    timeout: 15000
+- assertVisible: Connect to Home Assistant
+- stopApp
