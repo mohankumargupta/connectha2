@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "BigButton:Home Assistant",
-    "slug": "BigButtonHA",
+    "slug": "bigbuttonha",
     "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon1024x1024.png",
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/icon1024x1024.png",
         "backgroundColor": "#007260"
       },
-      "package": "com.mohankumargupta.connectha2"
+      "package": "com.mohankumargupta.bigbuttonha"
     },
     "web": {
       "bundler": "metro",
