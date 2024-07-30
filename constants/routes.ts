@@ -1,15 +1,3 @@
-/*
-export const Routes = {
-    first: '/',
-    login: '/login',
-    auth: '/auth',
-    home: '/home',
-    entities: '/home/entitiesList',
-    icons: '/home/iconsList',
-    customize: '/home/customizeButton',
-};
-*/
-
 export const route_options = {
     pending: 'pending',
     login: 'login',
@@ -17,6 +5,9 @@ export const route_options = {
     home: 'home',
     findha: 'ha/find',
     connect: 'ha/connect',
+    entitiesList: 'home/entitiesList',
+    iconsList: 'home/iconsList',
+    customizeButton: 'home/customizeButton'
   } as const;
   
  export  type RouteKeyDestination = keyof typeof route_options;

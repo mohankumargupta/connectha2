@@ -4,11 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthRequest, DiscoveryDocument } from 'expo-auth-session';
 import { AuthClient } from "@/constants/AuthData";
 
-type HomeAssistantURL = {
-    url: string
-};
+const connect_login = ((data: string | undefined) => {
+    if (data === undefined) {
+        return;
+    }
 
-const connect_login = (({ url: data }: HomeAssistantURL) => {
     const authSession = new AuthRequest({
         clientId: AuthClient.client_id,
         redirectUri: AuthClient.redirect_uri,
@@ -34,7 +34,7 @@ export default function Connect() {
                 <View style={styles.button}>
                     <Button
                         title="Connect"
-
+                        onPress={(event) => connect_login(url)}
                     />
                 </View>
                 <View style={styles.button}>

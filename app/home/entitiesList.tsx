@@ -11,7 +11,7 @@ import { states } from '@/types/messages';
 import { Entity, EntityFromHA } from '@/types/entities';
 import ListSearch, { FlatListItem, ListItemProps } from '@/components/ListSearch';
 import { router, useNavigation, useRouter } from 'expo-router';
-import { Routes } from '@/constants/routes';
+import { route_options } from '@/constants/routes';
 import useStateCallback from '../common/usestatecallback';
 
 async function getValue(key: string) {
@@ -39,7 +39,7 @@ export default function EntitiesList() {
             left={() => <MaterialCommunityIcons name="play" size={24} color="black" />}
             onPress={() => {
                 router.push({
-                    pathname: Routes.icons, params: {
+                    pathname: route_options.iconsList, params: {
                         entity_id: item.key,
                         friendly_name: item.name,
                     }

@@ -7,7 +7,7 @@ import MDIGlyphMap from '@expo/vector-icons/build/vendor/react-native-vector-ico
 import { memo, useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ListSearch, { FlatListItem, ListItemProps } from "@/components/ListSearch";
-import { Routes } from "@/constants/routes";
+import { route_options } from "@/constants/routes";
 
 type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -33,7 +33,7 @@ const EntityItem = memo(({ item, entity_id, friendly_name }: ListItemProps & { e
         onPress={() => {
             console.log(item.icon);
             router.push({
-                pathname: Routes.customize, params: {
+                pathname: route_options.customizeButton, params: {
                     icon: item.key,
                     entity_id,
                     friendly_name,

@@ -5,7 +5,7 @@ import { Avatar, Button, SegmentedButtons, Switch, TextInput } from 'react-nativ
 import { router, useLocalSearchParams } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Routes } from '@/constants/routes';
+import { route_options } from '@/constants/routes';
 
 type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -48,7 +48,7 @@ export default function CustomizeButton() {
                     await AsyncStorage.setItem("live", live.toString());
                     await AsyncStorage.setItem("displayName", displayName);
                     router.push({
-                        pathname: Routes.home,
+                        pathname: route_options.home,
                         params: {
                             entity_id,
                             friendly_name,

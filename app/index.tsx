@@ -1,6 +1,5 @@
 import { AuthData } from '@/constants/AuthData';
 import { useNavigation, useGlobalSearchParams, Redirect, router } from 'expo-router';
-//import 'react-native-reanimated';
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import * as AuthSession from 'expo-auth-session';
@@ -62,13 +61,15 @@ export default function index() {
           const icon = await AsyncStorage.getItem("icon");
 
           if (entity_id && name && action && icon) {
-            setTimeout(() => { SplashScreen.hideAsync(); }, 300);
+            setTimeout(() => { SplashScreen.hideAsync(); }, 2000);
+            console.log("going home");
             router.replace(route_options.home);
             //setDestination(route_options.home);
           }
 
           else {
-            setTimeout(() => { SplashScreen.hideAsync(); }, 300);
+            setTimeout(() => { SplashScreen.hideAsync(); }, 2000);
+            console.log("going configure");
             router.replace(route_options.configure);
             //setDestination(route_options.configure);
           }
@@ -77,7 +78,7 @@ export default function index() {
 
       catch (error) {
         setTimeout(() => { SplashScreen.hideAsync(); }, 300);
-        setDestination('login');
+        //setDestination('login');
       }
     }
   }
@@ -86,33 +87,15 @@ export default function index() {
     previous_login();
   }, []);
 
-  switch (destination) {
-    case 'pending':
-      return (
-        <View style={{ flex: 1, backgroundColor: "#344E41" }}>
-          <Text>moo</Text>
-        </View>
-      );
-      break;
+  //switch (destination) {
+  //  case 'pending':
+  return (
+    <View style={{ flex: 1, backgroundColor: "#344E41" }}>
+    </View>
+  );
+  //    break;
 
-    /*
-    case 'login':
-      return (
-        <Redirect href="/login"></Redirect>
-      );
-      break;
-    case 'configure':
-      return (
-        <Redirect href="/home/entitiesList"></Redirect>
-      );
-      break;
-    case 'home':
-      return (
-        <Redirect href="/home"></Redirect>
-      );
-      break;
-    */
-  }
+  //  }
 }
 
 
