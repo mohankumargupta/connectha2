@@ -13,17 +13,17 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { TextInput } from 'react-native-paper';
-import { configureDiscovery, startDiscovery, Service } from '@/modules/nsd';
+//import { configureDiscovery, startDiscovery, Service } from '@/modules/nsd';
 import { router } from 'expo-router';
 import { route_options } from '@/constants/routes';
+import { hello } from '@/modules/exponsd';
 
-/*
 type Service = {
     address: string,
     port: number,
     name: string
 };
-*/
+
 
 export default function Example() {
     const [form, setForm] = useState({
@@ -33,6 +33,7 @@ export default function Example() {
     const [urlScheme, setUrlScheme] = useState('http');
     const [ha, setHA] = useState('')
     const [services, SetServices] = useState<Array<Service>>([]);
+    const [greeting, setGreeting] = useState('');
     /*
     const services: Array<Service> = [
         {
@@ -44,12 +45,14 @@ export default function Example() {
     */
 
     useEffect(() => {
-        const sub = configureDiscovery("_home-assistant._tcp", (service) => {
-            console.log(service);
-            //SetServices([...services, service]);
-        })
-        startDiscovery();
-        return () => sub.remove();
+        //const sub = configureDiscovery("_home-assistant._tcp", (service) => {
+        //    console.log(service);
+        //SetServices([...services, service]);
+        //})
+        //startDiscovery();
+        //return () => sub.remove();
+        const hi = hello();
+        setGreeting(hi);
     }, []);
 
 
@@ -101,6 +104,9 @@ export default function Example() {
                     </View>
                 </View>
 
+            </View>
+            <View>
+                <Text>{greeting}</Text>
             </View>
             <View style={styles.content}>
                 <View style={styles.section}>

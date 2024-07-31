@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "tvos", "android", "web"],
+  "ios": {
+    "modules": ["ExpoNsdModule"]
+  },
+  "android": {
+    "modules": ["com.mohankumargupta.expo.nsd.ExpoNsdModule"]
+  }
+}
