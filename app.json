@@ -16,11 +16,16 @@
       "supportsTablet": true
     },
     "android": {
+      
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon1024x1024.png",
         "backgroundColor": "#007260"
       },
-      "package": "com.mohankumargupta.bigbuttonha"
+      "package": "com.mohankumargupta.bigbuttonha",
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ]
     },
     "web": {
       "bundler": "metro",
