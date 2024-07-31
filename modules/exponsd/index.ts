@@ -1,4 +1,4 @@
-import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-core';
+import { EventEmitter, Subscription } from 'expo-modules-core';
 
 // Import the native module. On web, it will be resolved to ExpoNsd.web.ts
 // and on native platforms to ExpoNsd.ts
@@ -17,7 +17,7 @@ export async function setValueAsync(value: string) {
   return await ExpoNsdModule.setValueAsync(value);
 }
 
-const emitter = new EventEmitter(ExpoNsdModule ?? NativeModulesProxy.ExpoNsd);
+const emitter = new EventEmitter(ExpoNsdModule);
 
 export function addChangeListener(listener: (event: ChangeEventPayload) => void): Subscription {
   return emitter.addListener<ChangeEventPayload>('onChange', listener);
