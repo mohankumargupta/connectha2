@@ -14,7 +14,8 @@
     "lint": "expo lint",
     "create-native-module": "npx create-expo-module@latest --local",
     "log": "npx react-native log-android",
-    "logverbose": "adb logcat *:S ReactNative:V ReactNativeJS:V"
+    "logverbose": "adb logcat *:S ReactNative:V ReactNativeJS:V",
+    "logrubbish":  "adb logcat -e com.mohankumargupta.bigbuttonha"
   },
   "jest": {
     "preset": "jest-expo"
