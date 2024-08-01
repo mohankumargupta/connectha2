@@ -16,7 +16,7 @@ import { TextInput } from 'react-native-paper';
 //import { configureDiscovery, startDiscovery, Service } from '@/modules/nsd';
 import { router } from 'expo-router';
 import { route_options } from '@/constants/routes';
-import { hello } from '@/modules/exponsd';
+//import { hello } from '@/modules/exponsd';
 
 type Service = {
     address: string,
@@ -51,8 +51,8 @@ export default function Example() {
         //})
         //startDiscovery();
         //return () => sub.remove();
-        const hi = hello();
-        setGreeting(hi);
+        //const hi = hello();
+        //setGreeting(hi);
     }, []);
 
 

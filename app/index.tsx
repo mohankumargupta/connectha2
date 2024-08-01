@@ -11,6 +11,7 @@ import { Colors } from '@/constants/Colors';
 import { Text, View } from 'react-native';
 //import { SplashScreen } from 'expo-router';
 import { route_options, RouteDestination } from '@/constants/routes';
+import * as ExpoNsd from '../modules/exponsd';
 
 //SplashScreen.preventAutoHideAsync();
 
@@ -85,6 +86,8 @@ export default function index() {
   }
 
   useEffect(() => {
+    const hi = ExpoNsd.hello();
+    console.log(hi);
     previous_login();
   }, []);
 
