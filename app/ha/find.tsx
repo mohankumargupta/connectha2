@@ -13,7 +13,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { TextInput } from 'react-native-paper';
-import { configureDiscovery, startDiscovery, Service } from '../../modules/exponsd';
+import { configureDiscovery, startDiscovery, Service } from '../../modules/nsd';
 import { router } from 'expo-router';
 import { route_options } from '@/constants/routes';
 //import { hello } from '@/modules/exponsd';

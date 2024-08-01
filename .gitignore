@@ -11,7 +11,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
-/modules/exponsd/android/build
+/modules/nsd/android/build
 /modulesold
 # macOS
 .DS_Store
