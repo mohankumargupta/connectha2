@@ -34,8 +34,53 @@ export default function Example() {
     });
     const [urlScheme, setUrlScheme] = useState('http');
     const [ha, setHA] = useState('')
-    const [services, SetServices] = useState<Array<Service>>([]);
+    const [services, setServices] = useState<Array<Service>>([]);
     const [greeting, setGreeting] = useState('');
+    const [dummyServices, setDummyServices] = useState<Array<Service>>([]);
+
+    function removeDuplicatesByAddressAndPort(services: Service[]): Service[] {
+        const uniqueServices: Service[] = services.reduce((accumulator, currentService) => {
+            const exists = accumulator.some((service) => service.address === currentService.address && service.port === currentService.port);
+            if (!exists) {
+                accumulator.push(currentService);
+            }
+            return accumulator;
+        }, [] as Service[]);
+
+        return uniqueServices;
+    }
+
+    const addService = (newService: Service) => {
+        let newDummyServices = dummyServices;
+        const name = `${newService.address}_${newService.port}`
+        const newDummyService = {
+            address: newService.address,
+            port: newService.port,
+            name
+        };
+        newDummyServices.push(newDummyService);
+        const uniqueServices = removeDuplicatesByAddressAndPort(newDummyServices);
+        setDummyServices(uniqueServices);
+        console.log(uniqueServices);
+        if (!services.some((service) => service.address === newService.address && service.port === newService.port)) {
+            setServices([...services, newService]);
+            //console.log(services);
+        }
+    };
+
+
+    /*
+
+    useEffect(() => {
+        console.log("in use effect services");
+        console.log(services);
+    }, [services]);
+
+    useEffect(() => {
+        console.log("in use effect dummy services");
+        console.log(dummyServices);
+    }, [dummyServices]);
+    */
     /*
     const services: Array<Service> = [
         {
@@ -48,8 +93,11 @@ export default function Example() {
 
     useEffect(() => {
         const sub = configureDiscovery("_home-assistant._tcp", (service) => {
-            console.log(service);
-            SetServices([...services, service]);
+            if (service) {
+                console.log(service);
+                //setServices([...services, service]);
+                addService(service);
+            }
         })
         startDiscovery();
         //return () => sub.remove();
@@ -68,7 +116,7 @@ export default function Example() {
             <View style={styles.content}>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>found on Local network</Text>
-                    <View style={styles.sectionBody}>
+                    <View>
                         {
                             services.map((service, i) => {
                                 let classes: any = [styles.rowWrapper];
@@ -79,26 +127,28 @@ export default function Example() {
                                     classes = [...classes, styles.rowLast]
                                 }
                                 return (
-                                    <View key={i} style={classes}>
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                router.push(
-                                                    {
-                                                        pathname: route_options.connect,
-                                                        params: {
-                                                            url: `http://${service.address}:${service.port}`
+                                    <View key={`${service.address}_${service.port}`} style={styles.sectionBody}>
+                                        <View style={classes}>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    router.push(
+                                                        {
+                                                            pathname: route_options.connect,
+                                                            params: {
+                                                                url: `http://${service.address}:${service.port}`
+                                                            }
                                                         }
-                                                    }
-                                                )
-                                            }}
-                                            style={styles.row}>
-                                            <Text style={styles.rowLabel}>{service.address}</Text>
-                                            <View style={styles.rowSpacer} />
-                                            <Feather
-                                                color="#bcbcbc"
-                                                name="chevron-right"
-                                                size={19} />
-                                        </TouchableOpacity>
+                                                    )
+                                                }}
+                                                style={styles.row}>
+                                                <Text style={styles.rowLabel}>{service.address}</Text>
+                                                <View style={styles.rowSpacer} />
+                                                <Feather
+                                                    color="#bcbcbc"
+                                                    name="chevron-right"
+                                                    size={19} />
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
                                 )
                             })
