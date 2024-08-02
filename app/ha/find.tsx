@@ -5,6 +5,7 @@ import {
     ScrollView,
     View,
     Text,
+    TextInput,
     TouchableOpacity,
     Switch,
     Image,
@@ -12,7 +13,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-import { TextInput } from 'react-native-paper';
+//import { TextInput } from 'react-native-paper';
 import { configureDiscovery, startDiscovery, Service } from '../../modules/nsd';
 import { router } from 'expo-router';
 import { route_options } from '@/constants/routes';
@@ -97,7 +98,7 @@ export default function Example() {
 
 
     return (
-        <SafeAreaView style={{ flex: 1, flexBasis: 0, flexGrow: 1, flexShrink: 1, backgroundColor: '#dad7cd', marginTop: 36 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#dad7cd', marginTop: 36 }}>
             <View style={styles.header}>
                 <Text numberOfLines={1} style={styles.headerTitle}>
                     Find Home Assistant
@@ -155,32 +156,12 @@ export default function Example() {
                     <Text style={styles.sectionTitle}>Enter Details Manually</Text>
                 </View>
             </View>
-            <View style={styles.content}>
-                <View style={styles.section}>
-                    <View style={{ paddingHorizontal: 0 }}>
-                        <View style={styles.sectionBody}>
-                            <View>
-                                <TouchableOpacity
-                                    onPress={() => {
 
-                                    }}
-                                    style={styles.row}>
-                                    <Text style={styles.rowLabel}>
-                                        Text Input should go here
-                                    </Text>
-                                    <View style={styles.rowSpacer} />
-                                    <Feather
-                                        color="#bcbcbc"
-                                        name="chevron-right"
-                                        size={19} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
+            <View style={{ marginHorizontal: 16 }}>
+                <View style={styles.manual}>
+                    <TextInput style={{ flex: 1, textAlignVertical: "center" }} placeholder='eg. http://192.168.1.10:8123' />
                 </View>
             </View>
-
-
         </SafeAreaView>
     );
 }
@@ -272,5 +253,14 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: '600',
         color: '#dc2626',
+    },
+    manual: {
+        width: "100%",
+        height: 48,
+        borderColor: "black",
+        borderWidth: 1,
+        borderRadius: 8,
+        backgroundColor: "white",
+        paddingLeft: 16,
     },
 });
