@@ -118,7 +118,7 @@ export default function Example() {
                     <Text style={styles.sectionTitle}>found on Local network</Text>
                     <View>
                         {
-                            services.map((service, i) => {
+                            dummyServices.map((service, i) => {
                                 let classes: any = [styles.rowWrapper];
                                 if (i === 0) {
                                     classes = [...classes, styles.rowFirst]
