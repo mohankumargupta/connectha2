@@ -16,16 +16,6 @@ import { TextInput } from 'react-native-paper';
 import { configureDiscovery, startDiscovery, Service } from '../../modules/nsd';
 import { router } from 'expo-router';
 import { route_options } from '@/constants/routes';
-//import { hello } from '@/modules/exponsd';
-
-/*
-type Service = {
-    address: string,
-    port: number,
-    name: string
-};
-*/
-
 
 export default function Example() {
     const [form, setForm] = useState({
@@ -166,29 +156,7 @@ export default function Example() {
                 </View>
             </View>
             <View style={{ paddingHorizontal: 0 }}>
-                <View style={{ backgroundColor: "white", marginBottom: 24 }}>
-                    <Picker
-                        selectedValue={urlScheme}
-                        onValueChange={(itemValue, itemIndex) =>
-                            setUrlScheme(itemValue)
 
-                        }>
-                        <Picker.Item label="http://" value="http" />
-                        <Picker.Item label="https://" value="https" />
-                    </Picker>
-                </View>
-                <View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ fontSize: 24 }}>{urlScheme}://</Text>
-                        <View>
-                            <TextInput style={{ backgroundColor: "#ffffff" }} value={ha} onChangeText={(val) => setHA(val)} />
-                        </View>
-                        <Text style={{ fontSize: 32, marginHorizontal: 8 }}>:</Text>
-                        <View>
-                            <TextInput style={{ backgroundColor: "#ffffff" }} value={ha} onChangeText={(val) => setHA(val)} />
-                        </View>
-                    </View>
-                </View>
             </View>
 
 
