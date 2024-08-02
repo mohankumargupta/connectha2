@@ -113,7 +113,7 @@ export default function Example() {
                                 if (i === 0) {
                                     classes = [...classes, styles.rowFirst]
                                 }
-                                if (i === services.length - 1) {
+                                if (i === dummyServices.length - 1) {
                                     classes = [...classes, styles.rowLast]
                                 }
                                 return (
@@ -155,8 +155,29 @@ export default function Example() {
                     <Text style={styles.sectionTitle}>Enter Details Manually</Text>
                 </View>
             </View>
-            <View style={{ paddingHorizontal: 0 }}>
+            <View style={styles.content}>
+                <View style={styles.section}>
+                    <View style={{ paddingHorizontal: 0 }}>
+                        <View style={styles.sectionBody}>
+                            <View>
+                                <TouchableOpacity
+                                    onPress={() => {
 
+                                    }}
+                                    style={styles.row}>
+                                    <Text style={styles.rowLabel}>
+                                        Text Input should go here
+                                    </Text>
+                                    <View style={styles.rowSpacer} />
+                                    <Feather
+                                        color="#bcbcbc"
+                                        name="chevron-right"
+                                        size={19} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </View>
             </View>
 
 
