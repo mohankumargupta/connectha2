@@ -28,6 +28,7 @@ export default function Example() {
     const [services, setServices] = useState<Array<Service>>([]);
     const [greeting, setGreeting] = useState('');
     const [dummyServices, setDummyServices] = useState<Array<Service>>([]);
+    const [url, setUrl] = useState("");
 
     function removeDuplicatesByAddressAndPort(services: Service[]): Service[] {
         const uniqueServices: Service[] = services.reduce((accumulator, currentService) => {
@@ -162,9 +163,24 @@ export default function Example() {
                 <View style={styles.manual}>
                     <TextInput style={{ flex: 1, marginRight: 16, textAlignVertical: "center" }}
                         placeholder='eg. http://192.168.1.10:8123'
+                        value={url}
+                        onChangeText={(val) => setUrl(val)}
                         onSubmitEditing={() => {
-
-                        }} />
+                            console.log(url);
+                            router.push(
+                                {
+                                    pathname: route_options.connect,
+                                    params: {
+                                        url
+                                    }
+                                }
+                            )
+                        }}
+                        returnKeyLabel='Go'
+                        returnKeyType='go'
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                    />
                     <View>
                         <Feather
                             color="#bcbcbc"
