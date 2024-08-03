@@ -8,16 +8,6 @@ import { route_options } from '@/constants/routes';
 import { useWebsocketManager } from '@/stores/websocket';
 import { callService, subscribe_trigger } from '@/types/messages';
 
-/*
-async function getValue(key: string) {
-  let result = await SecureStore.getItemAsync(key);
-  console.log(`${key}: ${result}`);
-  return result;
-}
-*/
-
-
-
 type HAButton = {
     entity_id: string,
     name: string,
@@ -25,10 +15,7 @@ type HAButton = {
     icon: string,
 };
 
-
-
-
-export default function home() {
+export default function main() {
     const [habutton, setHAbutton] = useState<HAButton>();
     const navigation = useNavigation();
     const isFocused = navigation.isFocused;
@@ -74,17 +61,6 @@ export default function home() {
             sendMessage(subscribe_trigger(entity_id));
         }
     }
-
-    /*
-    async function _subscribe_trigger() {
-      const entity_id = await AsyncStorage.getItem("entity_id");
-      if (entity_id) {
-        const message = subscribe_trigger(entity_id);
-        sendMessage(message);
-      }
-  
-    }
-    */
 
     useEffect(() => {
 

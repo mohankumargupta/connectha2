@@ -1,11 +1,11 @@
 import * as AuthSession from 'expo-auth-session';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useEffect } from 'react';
-import { View, Text } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { View, Text, SafeAreaView } from 'react-native'
 import * as SecureStore from 'expo-secure-store';
 import { AuthData } from '@/constants/AuthData';
 import { useWebsocketManager } from '@/stores/websocket';
+import { route_options } from '@/constants/routes';
 
 async function saveItem(key: string, value: string) {
     await SecureStore.setItemAsync(key, value);
@@ -29,7 +29,10 @@ export default function auth() {
 
     useEffect(() => {
         async function exchange_token() {
-            if (code == null) return;
+            if (code == null) {
+                router.replace(route_options.findha);
+                return;
+            }
 
             const tokenResponse = await AuthSession.exchangeCodeAsync({
                 clientId: HOMEASSISTANT_CLIENTID,
@@ -38,51 +41,24 @@ export default function auth() {
             }, {
                 tokenEndpoint: `${state}/auth/token`,
             });
-            //console.log("------------AUTH---------");
-            //console.log(tokenResponse);
+
             if (state) {
                 await save(state, tokenResponse);
                 connect(state, tokenResponse.accessToken);
-                router.replace("/home/entitiesList")
+                router.replace(route_options.entitiesList);
+            }
+
+            else {
+                router.replace(route_options.findha);
             }
         }
+        console.log("inside auth");
         exchange_token();
     }, []);
 
-    /*
-    if (code !=null) {
-      const access_token_request =new AccessTokenRequest({
-        clientId: HOMEASSISTANT_CLIENTID,
-        redirectUri: HOMEASSISTANT_REDIRECT_URI,
-        code: code
-      });
-      
-    }
-    */
-
-
-
-
-
-    /*
-    fetch(`${state}`, {
-      method: 'POST',
-      headers:{
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },    
-      body: new URLSearchParams({
-          'userName': 'test@gmail.com',
-          'password': 'Password!',
-          'grant_type': 'password'
-      })
-    });
-    */
-
-
-
-
-
     return (
-        <></>
+        <SafeAreaView>
+            <></>
+        </SafeAreaView>
     )
 }
