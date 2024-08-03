@@ -138,6 +138,7 @@ export default function Example() {
                                                     color="#bcbcbc"
                                                     name="chevron-right"
                                                     size={19} />
+
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -159,7 +160,17 @@ export default function Example() {
 
             <View style={{ marginHorizontal: 16 }}>
                 <View style={styles.manual}>
-                    <TextInput style={{ flex: 1, textAlignVertical: "center" }} placeholder='eg. http://192.168.1.10:8123' />
+                    <TextInput style={{ flex: 1, marginRight: 16, textAlignVertical: "center" }}
+                        placeholder='eg. http://192.168.1.10:8123'
+                        onSubmitEditing={() => {
+
+                        }} />
+                    <View>
+                        <Feather
+                            color="#bcbcbc"
+                            name="chevron-right"
+                            size={19} />
+                    </View>
                 </View>
             </View>
         </SafeAreaView>
@@ -257,10 +268,13 @@ const styles = StyleSheet.create({
     manual: {
         width: "100%",
         height: 48,
-        borderColor: "black",
+        borderColor: "#dad7cd",
         borderWidth: 1,
         borderRadius: 8,
         backgroundColor: "white",
         paddingLeft: 16,
+        paddingRight: 12,
+        flexDirection: "row",
+        alignItems: "center",
     },
 });
