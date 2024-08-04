@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         bottom: 0,
         alignSelf: "center",
-        margin: 16,
+        margin: 64,
     },
     entityname: {
         fontFamily: "WorkSans_400Regular",
