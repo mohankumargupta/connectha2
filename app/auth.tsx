@@ -3,9 +3,19 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { useEffect } from 'react';
 import { View, Text, SafeAreaView } from 'react-native'
 import * as SecureStore from 'expo-secure-store';
-import { AuthData } from '@/constants/AuthData';
+import { AuthData, TokenSecret, convertToValidKeyName } from '@/constants/AuthData';
 import { useWebsocketManager } from '@/stores/websocket';
 import { route_options } from '@/constants/routes';
+
+async function hasKey(key: string) {
+    const validKey = convertToValidKeyName(key);
+    const value = await SecureStore.getItemAsync(validKey);
+    return value !== null;
+}
+
+async function getItem(key: string) {
+    return await SecureStore.getItemAsync(key);
+}
 
 async function saveItem(key: string, value: string) {
     await SecureStore.setItemAsync(key, value);
@@ -15,6 +25,34 @@ async function save(haUrl: string, token: AuthSession.TokenResponse) {
     await saveItem(AuthData.ha_url, haUrl);
     await saveItem(AuthData.access_token, token.accessToken);
     await saveItem(AuthData.refresh_token, token.refreshToken!);
+
+    const secret: TokenSecret = {
+        'access_token': token.accessToken,
+        "refresh_token": token.refreshToken!,
+    };
+
+    const servers = await getItem(AuthData.ha_server_list);
+    const newKey = convertToValidKeyName(haUrl);
+    if (servers === null) {
+        console.log("servers is null");
+        console.log(haUrl);
+
+        console.log(newKey);
+        await saveItem(newKey, JSON.stringify(secret));
+    }
+    else {
+        console.log(servers);
+        let pastServers = JSON.parse(servers) as TokenSecret[];
+        pastServers.push(secret);
+        await saveItem(newKey, JSON.stringify(secret));
+
+    }
+
+
+
+
+    //await saveItem(convertToValidKeyName(haUrl), JSON.stringify(secret));
+    //console.log(servers);
 }
 
 export default function auth() {
