@@ -12,11 +12,12 @@ import {
 
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
-//import { TextInput } from 'react-native-paper';
 import { configureDiscovery, startDiscovery, Service } from '../../modules/nsd';
 import { router } from 'expo-router';
 import { route_options } from '@/constants/routes';
+import { z } from 'zod';
+
+const urlSchema = z.string().url({ message: "Invalid URL" });
 
 export default function Example() {
     const [form, setForm] = useState({
@@ -29,6 +30,7 @@ export default function Example() {
     const [greeting, setGreeting] = useState('');
     const [dummyServices, setDummyServices] = useState<Array<Service>>([]);
     const [url, setUrl] = useState("");
+    const [urlError, setUrlError] = useState(false);
 
     function removeDuplicatesByAddressAndPort(services: Service[]): Service[] {
         const uniqueServices: Service[] = services.reduce((accumulator, currentService) => {
@@ -98,6 +100,29 @@ export default function Example() {
     }, []);
 
 
+    function submit(url: string) {
+        router.push(
+            {
+                pathname: route_options.connect,
+                params: {
+                    url
+                }
+            }
+        )
+    }
+
+    function submitManually() {
+        console.log(url);
+        try {
+            urlSchema.parse(url);
+            submit(url);
+        }
+        catch (e) {
+            setUrlError(true);
+        }
+
+    }
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#dad7cd', marginTop: 36 }}>
             <View style={styles.header}>
@@ -123,17 +148,19 @@ export default function Example() {
                                         <View style={classes}>
                                             <TouchableOpacity
                                                 onPress={() => {
-                                                    router.push(
-                                                        {
-                                                            pathname: route_options.connect,
-                                                            params: {
-                                                                url: `http://${service.address}:${service.port}`
-                                                            }
-                                                        }
-                                                    )
+                                                    submit(`http://${service.address}:${service.port}`);
                                                 }}
                                                 style={styles.row}>
-                                                <Text style={styles.rowLabel}>{service.address}</Text>
+                                                <View
+                                                    style={{
+                                                        width: 10,
+                                                        height: 10,
+                                                        borderRadius: 5,
+                                                        backgroundColor: 'green',
+                                                        marginRight: 8,
+                                                    }}
+                                                />
+                                                <Text style={styles.rowLabel}>{`http://${service.address}:${service.port}`}</Text>
                                                 <View style={styles.rowSpacer} />
                                                 <Feather
                                                     color="#bcbcbc"
@@ -164,30 +191,36 @@ export default function Example() {
                     <TextInput style={{ flex: 1, marginRight: 16, textAlignVertical: "center" }}
                         placeholder='eg. http://192.168.1.10:8123'
                         value={url}
-                        onChangeText={(val) => setUrl(val)}
+                        onChangeText={
+                            (val) => {
+                                setUrlError(false);
+                                setUrl(val);
+                            }
+                        }
                         onSubmitEditing={() => {
-                            console.log(url);
-                            router.push(
-                                {
-                                    pathname: route_options.connect,
-                                    params: {
-                                        url
-                                    }
-                                }
-                            )
+                            submitManually();
                         }}
                         returnKeyLabel='Go'
                         returnKeyType='go'
                         autoCorrect={false}
                         autoCapitalize="none"
                     />
-                    <View>
-                        <Feather
-                            color="#bcbcbc"
-                            name="chevron-right"
-                            size={19} />
-                    </View>
+                    <TouchableOpacity
+                        onPress={() => submit(url)}
+                    >
+                        <View>
+                            <Feather
+                                color="#bcbcbc"
+                                name="chevron-right"
+                                size={19} />
+                        </View>
+                    </TouchableOpacity>
                 </View>
+            </View>
+            <View style={{ marginHorizontal: 16 }}>
+                {urlError &&
+                    <Text style={{ color: "red" }}>URL is not valid</Text>
+                }
             </View>
         </SafeAreaView>
     );
