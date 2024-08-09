@@ -30,7 +30,7 @@ export default function index() {
 
   async function previous_login() {
     const refresh_token = await get_value_from_store(AuthData.refresh_token);
-    const ha_url = await get_value_from_store(AuthData.ha_url);
+    const ha_url = await AsyncStorage.getItem(AuthData.ha_url);
 
     console.log(refresh_token);
     console.log(ha_url);

@@ -7,6 +7,7 @@ import { router, useNavigation } from 'expo-router';
 import { route_options } from '@/constants/routes';
 import { useWebsocketManager } from '@/stores/websocket';
 import { callService, subscribe_trigger } from '@/types/messages';
+import { AuthData, convertToValidKeyName } from '@/constants/AuthData';
 
 type HAButton = {
     entity_id: string,
@@ -25,6 +26,9 @@ export default function main() {
     const [onOff, setOnOff] = useState(false);
 
     async function load() {
+        const ha_url = await AsyncStorage.getItem(AuthData.ha_url);
+        console.log(`ha_url from AsyncStorage: ${ha_url}`);
+        const buttonDetails = await AsyncStorage.getItem(convertToValidKeyName(ha_url!));
         const entity_id = await AsyncStorage.getItem("entity_id");
         const name = await AsyncStorage.getItem("friendly_name");
         const action = await AsyncStorage.getItem("action");

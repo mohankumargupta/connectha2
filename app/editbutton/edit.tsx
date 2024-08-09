@@ -6,6 +6,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { route_options } from '@/constants/routes';
+import { AuthData, convertToValidKeyName } from '@/constants/AuthData';
+import { getItem, saveItem } from '../auth';
 
 type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -16,7 +18,8 @@ export default function CustomizeButton() {
     const [displayName, setDisplayName] = useState('');
 
     useEffect(() => {
-        setDisplayName(displayName);
+        if (friendly_name)
+            setDisplayName(friendly_name);
     }, []);
 
     return (
@@ -53,6 +56,18 @@ export default function CustomizeButton() {
                     await AsyncStorage.setItem("icon", icon as string);
                     await AsyncStorage.setItem("live", live.toString());
                     await AsyncStorage.setItem("displayName", displayName);
+                    const ha_url = await getItem(AuthData.ha_url);
+                    const entity_data = {
+                        "entity_id": entity_id as string,
+                        "friendly_name": friendly_name as string,
+                        "action": value,
+                        "icon": icon as string,
+                        "live": live.toString(),
+                        "displayName": displayName,
+                    };
+                    const stringified = JSON.stringify(entity_data);
+                    if (ha_url)
+                        await AsyncStorage.setItem(convertToValidKeyName(ha_url), stringified);
                     router.push({
                         pathname: route_options.home,
                         params: {

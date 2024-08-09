@@ -6,6 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { AuthData, TokenSecret, convertToValidKeyName } from '@/constants/AuthData';
 import { useWebsocketManager } from '@/stores/websocket';
 import { route_options } from '@/constants/routes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 async function hasKey(key: string) {
     const validKey = convertToValidKeyName(key);
@@ -13,22 +14,23 @@ async function hasKey(key: string) {
     return value !== null;
 }
 
-async function getItem(key: string) {
+export async function getItem(key: string) {
     return await SecureStore.getItemAsync(key);
 }
 
-async function saveItem(key: string, value: string) {
+export async function saveItem(key: string, value: string) {
     await SecureStore.setItemAsync(key, value);
 }
 
 async function save(haUrl: string, token: AuthSession.TokenResponse) {
-    await saveItem(AuthData.ha_url, haUrl);
-    await saveItem(AuthData.access_token, token.accessToken);
+    //await saveItem(AuthData.ha_url, haUrl);
+    await AsyncStorage.setItem(AuthData.ha_url, haUrl);
+    //await saveItem(AuthData.access_token, token.accessToken);
     await saveItem(AuthData.refresh_token, token.refreshToken!);
 
     const secret: TokenSecret = {
-        'access_token': token.accessToken,
         "refresh_token": token.refreshToken!,
+        "longlived_token": null,
     };
 
     const servers = await getItem(AuthData.ha_server_list);
@@ -39,20 +41,15 @@ async function save(haUrl: string, token: AuthSession.TokenResponse) {
 
         console.log(newKey);
         await saveItem(newKey, JSON.stringify(secret));
+        await saveItem(AuthData.ha_server_list, JSON.stringify([haUrl]));
     }
     else {
         console.log(servers);
-        let pastServers = JSON.parse(servers) as TokenSecret[];
-        pastServers.push(secret);
+        let pastServers = JSON.parse(servers) as string[];
+        pastServers.push(haUrl);
         await saveItem(newKey, JSON.stringify(secret));
-
+        await saveItem(AuthData.ha_server_list, JSON.stringify(pastServers));
     }
-
-
-
-
-    //await saveItem(convertToValidKeyName(haUrl), JSON.stringify(secret));
-    //console.log(servers);
 }
 
 export default function auth() {
@@ -63,7 +60,7 @@ export default function auth() {
     const HOMEASSISTANT_CLIENTID = "https://mohankumargupta.github.io";
     const HOMEASSISTANT_REDIRECT_URI = "https://mohankumargupta.github.io/redirect/bigbutton.html";
 
-    const connect = useWebsocketManager((state) => state.connect);
+    const connect = useWebsocketManager((i) => i.connect);
 
     useEffect(() => {
         async function exchange_token() {
@@ -80,9 +77,15 @@ export default function auth() {
                 tokenEndpoint: `${state}/auth/token`,
             });
 
-            if (state) {
-                await save(state, tokenResponse);
+            console.log("going to entitiesList");
+            console.log(tokenResponse);
+            console.log(state);
+
+            if (state && tokenResponse.accessToken) {
+                console.log("going to entitiesList before save");
+                //await save(state,);
                 connect(state, tokenResponse.accessToken);
+                console.log("really going now.");
                 router.replace(route_options.entitiesList);
             }
 
@@ -96,7 +99,7 @@ export default function auth() {
 
     return (
         <SafeAreaView>
-            <></>
+            <><Text>Boo</Text></>
         </SafeAreaView>
     )
 }

@@ -53,40 +53,43 @@ export default function EntitiesList() {
     };
 
     async function load() {
-        const access_token = await getValue(AuthData.access_token);
-        if (access_token) {
-            subscribe((event) => {
-                const data = JSON.parse(event.data);
+        subscribe((event) => {
+            const data = JSON.parse(event.data);
+            console.log("entitesList");
+            console.log(messageid);
+            console.log(data.id);
 
 
-                if (data.type === "result" && data.result && "map" in data.result) {
+            if (data.type === "result" && data.result && "map" in data.result) {
 
-                    //console.log(`here: ${data.id}`);
-                    const new_entities: Array<FlatListItem> = data.result.map((item: EntityFromHA): FlatListItem => {
-                        return {
-                            "key": item.entity_id,
-                            "name": item.attributes.friendly_name,
-                            "icon": "play"
-                        };
-                    }).sort(
-                        (a: FlatListItem, b: FlatListItem) => a.key.localeCompare(b.key)
-                    );
-                    //console.log(new_entities[0]);
-                    //console.log(new_entities);
-                    setEntities(new_entities);
-                    setLatestEntityID(data.id);
-                }
-            });
-            const id = sendMessage(states());
-            //setmessageid(previous_id => id);
-            setmessageid(id);
-            //console.log(`states send message id: ${id}`);
-            //console.log(`states send message id: ${messageid}`);
-        }
+                //console.log(`here: ${data.id}`);
+                const new_entities: Array<FlatListItem> = data.result.map((item: EntityFromHA): FlatListItem => {
+                    return {
+                        "key": item.entity_id,
+                        "name": item.attributes.friendly_name,
+                        "icon": "play"
+                    };
+                }).sort(
+                    (a: FlatListItem, b: FlatListItem) => a.key.localeCompare(b.key)
+                );
+                //console.log(new_entities[0]);
+                //console.log(new_entities);
+                setEntities(new_entities);
+                setLatestEntityID(data.id);
+
+            }
+        });
+        const id = sendMessage(states());
+        console.log(`id: ${id}`);
+        //setmessageid(previous_id => id);
+        setmessageid(id);
+        //console.log(`states send message id: ${id}`);
+        //console.log(`states send message id: ${messageid}`);
     }
 
     useEffect(() => {
         //console.log("useffect empty called");
+        console.log("Im inside entitiesList now.")
         load();
         //console.log(navigation.getState());
         return () => {

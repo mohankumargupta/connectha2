@@ -3,12 +3,12 @@ import { create } from 'zustand'
 
 interface WebSocketInterface {
     socket: WebSocket|undefined,
-    messageHandlers: Set<(event: MessageEvent<any>) => void>,
-    id: number,
-    connect: (ha_url: string, access_token: string) => void,
-    sendMessage: (message: MessageBase) => number,
-    subscribe: (handler: (event: MessageEvent<any>) => void) => void,
-    unsubscribe: () => void,
+    //messageHandlers: Set<(event: MessageEvent<any>) => void>,
+    //id: number,
+    //connect: (ha_url: string, access_token: string) => void,
+    //sendMessage: (message: MessageBase) => number,
+    //subscribe: (handler: (event: MessageEvent<any>) => void) => void,
+    //unsubscribe: () => void,
 }
 
 function connected(socket: WebSocket|undefined): boolean {
@@ -19,12 +19,16 @@ function connected(socket: WebSocket|undefined): boolean {
 
 export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
     socket: undefined,
-    id: 2, //id:1 is usually used for supportedFeatures message
-    messageHandlers: new Set(),
-    connect: (ha_url: string, access_token: string ) => {       
+    //id: 2, //id:1 is usually used for supportedFeatures message
+    //messageHandlers: new Set(),
+    /*
+    connect: (ha_url: string, access_token: string ) => {    
+        console.log("inside connect");
+        console.log(ha_url);
         const websocket_url = `${ha_url}/api/websocket`;
         set((state) => {
             if (connected(state.socket)) {
+                console.log("already connected.")
                 return {};
             }
             const ws = new WebSocket(websocket_url);
@@ -40,8 +44,8 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
             
             ws.onmessage = e => {
                 const message = JSON.parse(e.data);
-                //console.log("---", message.type);
-                //console.log(JSON.parse(e.data));
+                console.log("---", message.type);
+                console.log(JSON.parse(e.data));
                 
                 get().messageHandlers.forEach((handler)=> handler(e));
             }
@@ -74,4 +78,5 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
             messageHandlers.delete(lastCallback);
         }
     },
+    */
   }))
