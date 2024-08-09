@@ -9,9 +9,12 @@ interface WebSocketInterface {
     init: (url: string, access_token: string) => void,
     connect: () => void,
     sendMessage: (message: MessageBase, callback: (event: MessageEvent<any>)=>void)  => number,
+    subscribe_trigger: (message: MessageBase, callback: (event: MessageEvent<any>)=>void) => void,
     callback: ((event: MessageEvent<any>) => void)|undefined;
     registerCallBack: (callback: (event: MessageEvent<any>) => void) => void,
     clearCallback: () => void,
+    registerTriggerCallBack: (callback: (event: MessageEvent<any>) => void) => void,
+    clearRegisterCallback: () => void,
     //messageHandler: (event: MessageEvent<any>) => void,
 
     //messageHandlers: Set<(event: MessageEvent<any>) => void>,
@@ -45,6 +48,11 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
             callback: undefined,
         }));
     },
+    subscribe_trigger: (message: MessageBase, callback: (event: MessageEvent<any>)=>void) => {
+
+    },
+    registerTriggerCallBack: (callback: (event: MessageEvent<any>) => void) => {},
+    clearRegisterCallback: () => {},
     init: (_url: string, _access_token: string) => {
       set((_)=>{
         return {
