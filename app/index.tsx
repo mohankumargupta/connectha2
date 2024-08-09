@@ -16,7 +16,9 @@ import { route_options, RouteDestination } from '@/constants/routes';
 
 export default function index() {
   const [access_token, setAccessToken] = useState<string | undefined>(undefined);
-  const connect = useWebsocketManager((state) => state.connect);
+  const websocket_init = useWebsocketManager((state) => state.init);
+  const websocket_connect = useWebsocketManager((state) => state.connect);
+
   const [destination, setDestination] = useState<RouteDestination>(route_options.pending);
 
   async function get_value_from_store(key: string): Promise<string | null> {
@@ -53,7 +55,8 @@ export default function index() {
 
         if (tokenResult && tokenResult.accessToken) {
           await saveItem(AuthData.access_token, tokenResult.accessToken);
-          connect(ha_url, tokenResult.accessToken);
+          websocket_init(ha_url, tokenResult.accessToken);
+          websocket_connect();
 
           const entity_id = await AsyncStorage.getItem("entity_id");
           const name = await AsyncStorage.getItem("friendly_name");

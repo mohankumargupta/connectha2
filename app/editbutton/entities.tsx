@@ -23,14 +23,13 @@ async function getValue(key: string) {
 export default function EntitiesList() {
     const connect = useWebsocketManager((state) => state.connect);
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
-    const subscribe = useWebsocketManager((state) => state.subscribe);
-    const unsubscribe = useWebsocketManager((state) => state.unsubscribe);
+    //const subscribe = useWebsocketManager((state) => state.subscribe);
+    //const unsubscribe = useWebsocketManager((state) => state.unsubscribe);
     const [entities, setEntities] = useState<Array<FlatListItem>>([]);
     const [latestEntityID, setLatestEntityID] = useState<number | undefined>(undefined);
     const navigation = useNavigation();
     const isFocused = navigation.isFocused;
     const [messageid, setmessageid] = useStateCallback(0);
-
 
     const EntityItem = memo(({ item }: ListItemProps) => (
         <List.Item
@@ -53,6 +52,7 @@ export default function EntitiesList() {
     };
 
     async function load() {
+        /*
         subscribe((event) => {
             const data = JSON.parse(event.data);
             console.log("entitesList");
@@ -79,7 +79,10 @@ export default function EntitiesList() {
 
             }
         });
-        const id = sendMessage(states());
+        */
+        const id = sendMessage(states(), (event) => {
+            const message = JSON.parse(event.data);
+        });
         console.log(`id: ${id}`);
         //setmessageid(previous_id => id);
         setmessageid(id);

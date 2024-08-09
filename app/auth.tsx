@@ -55,12 +55,14 @@ async function save(haUrl: string, token: AuthSession.TokenResponse) {
 export default function auth() {
     const params = useLocalSearchParams<{ code: string, state: string }>();
     const code = params.code;
-    const state = params.state;
+    const haUrl = params.state;
 
     const HOMEASSISTANT_CLIENTID = "https://mohankumargupta.github.io";
     const HOMEASSISTANT_REDIRECT_URI = "https://mohankumargupta.github.io/redirect/bigbutton.html";
 
-    const connect = useWebsocketManager((i) => i.connect);
+    const websocket_init = useWebsocketManager((i) => i.init);
+    const websocket_connect = useWebsocketManager((i) => i.connect);
+
 
     useEffect(() => {
         async function exchange_token() {
@@ -74,17 +76,20 @@ export default function auth() {
                 redirectUri: HOMEASSISTANT_REDIRECT_URI,
                 code: code
             }, {
-                tokenEndpoint: `${state}/auth/token`,
+                tokenEndpoint: `${haUrl}/auth/token`,
             });
 
             console.log("going to entitiesList");
             console.log(tokenResponse);
-            console.log(state);
+            console.log(haUrl);
 
-            if (state && tokenResponse.accessToken) {
+            if (haUrl && tokenResponse.accessToken) {
                 console.log("going to entitiesList before save");
                 //await save(state,);
-                connect(state, tokenResponse.accessToken);
+                //connect(state, tokenResponse.accessToken);
+                websocket_init(haUrl, tokenResponse.accessToken);
+                websocket_connect();
+
                 console.log("really going now.");
                 router.replace(route_options.entitiesList);
             }
