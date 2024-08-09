@@ -79,7 +79,7 @@ export default function auth() {
                 tokenEndpoint: `${haUrl}/auth/token`,
             });
 
-            console.log("going to entitiesList");
+            //console.log("going to entitiesList");
             console.log(tokenResponse);
             console.log(haUrl);
 
@@ -91,7 +91,10 @@ export default function auth() {
                 websocket_connect();
 
                 console.log("really going now.");
-                router.replace(route_options.entitiesList);
+                setTimeout(() => {
+                    router.replace(route_options.entitiesList);
+                }, 2000);
+
             }
 
             else {

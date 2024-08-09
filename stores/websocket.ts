@@ -9,7 +9,9 @@ interface WebSocketInterface {
     init: (url: string, access_token: string) => void,
     connect: () => void,
     sendMessage: (message: MessageBase, callback: (event: MessageEvent<any>)=>void)  => number,
-    messageHandler: (event: MessageEvent<any>) => void,
+    callback: ((event: MessageEvent<any>) => void)|undefined;
+    registerCallBack: (callback: (event: MessageEvent<any>) => void) => void,
+    //messageHandler: (event: MessageEvent<any>) => void,
 
     //messageHandlers: Set<(event: MessageEvent<any>) => void>,
     //id: number,
@@ -30,6 +32,13 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
     url: '',
     access_token: '',
     id: 2,
+    callback: undefined,
+    registerCallBack: (callback: (event: MessageEvent<any>) => void) => {
+        console.log("about to register callback");
+        set((state) => ({
+            callback,
+          }));
+    },
     init: (_url: string, _access_token: string) => {
       set((_)=>{
         return {
@@ -42,7 +51,8 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
        const socket = get().socket;
        const url = get().url;
        const access_token = get().access_token;
-       const messageHandler = get().messageHandler;
+       //const messageHandler = get().messageHandler;
+       //const callback = get().callback;
 
        if (connected(socket)) {
          return;
@@ -61,11 +71,26 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
            }
            
            ws.onmessage = e => {
+               const callback = get().callback;
                const message = JSON.parse(e.data);
-               console.log("---", message.type);
-               console.log(JSON.parse(e.data));
+
+               //console.log("---", message.type);
+               //console.log(JSON.parse(e.data));
+               console.log("inside ws.onmessage");
+               if (callback) {
+                console.log("callback defined");
+                callback(e);
+               }
+               else {
+                console.log("callback not defined");
+               }
+                
+               if (message["id"]) {
+                 console.log(`inside onmessage-id: ${message["id"]}`);
+                 //messageHandler(e);
+
+               }
                
-               messageHandler(e);
            }
 
            return {
@@ -78,27 +103,35 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
         //const wsi = get();
         const socket = get().socket;
         const id = get().id;
+        const registerCallBack = get().registerCallBack;
 
         if (!connected(socket)) {
+            console.log("not connected. try connecting");
             get().connect();
         }
+
+
 
         //console.log("send message");
         //if (connected(socket)) {
          //console.log("end send message");
          const newid = id + 1;
          message.id = message.id ? message.id: newid;
-         socket!.send(JSON.stringify(message));
+         registerCallBack(callback);
+         setTimeout(()=>{
+            console.log("is callback defined?");
+            console.log(get().callback);
+            socket!.send(JSON.stringify(message));
+         }, 2000);
+        
          set((state)=>({id: newid}));
-         set((state)=> ({messageHandler: callback}));
+         //set((state) => ({ messageHandler: callback }), true);
+         
          return newid;
         //}
 
     },
-    messageHandler: (event: MessageEvent<any>) => {
-        const message = JSON.parse(event.data);
-        console.log(message);
-    },
+    //messageHandler: undefined
     //id: 2, //id:1 is usually used for supportedFeatures message
     //messageHandlers: new Set(),
     /*

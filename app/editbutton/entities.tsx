@@ -30,6 +30,7 @@ export default function EntitiesList() {
     const navigation = useNavigation();
     const isFocused = navigation.isFocused;
     const [messageid, setmessageid] = useStateCallback(0);
+    const [showEntities, setShowEntities] = useState(false);
 
     const EntityItem = memo(({ item }: ListItemProps) => (
         <List.Item
@@ -81,7 +82,27 @@ export default function EntitiesList() {
         });
         */
         const id = sendMessage(states(), (event) => {
+            console.log("it works!!!");
             const message = JSON.parse(event.data);
+            //console.log("inside sendmessage");
+            console.log(message);
+            if ("id" in message && message.id === id) {
+                console.log("message matches");
+                const data = message.result;
+                const new_entities: Array<FlatListItem> = data.map((item: EntityFromHA): FlatListItem => {
+                    return {
+                        "key": item.entity_id,
+                        "name": item.attributes.friendly_name,
+                        "icon": "play"
+                    };
+                }).sort(
+                    (a: FlatListItem, b: FlatListItem) => a.key.localeCompare(b.key)
+                );
+                //console.log(new_entities[0]);
+                //console.log(new_entities);
+                setEntities(new_entities);
+                setShowEntities(true);
+            }
         });
         console.log(`id: ${id}`);
         //setmessageid(previous_id => id);
@@ -110,7 +131,7 @@ export default function EntitiesList() {
 
     return (
         <SafeAreaView style={styles.container}>
-            {messageid === latestEntityID && <ListSearch entities={entities} placeholder='Search Entities' renderItem={renderItem}></ListSearch>}
+            {showEntities && <ListSearch entities={entities} placeholder='Search Entities' renderItem={renderItem}></ListSearch>}
         </SafeAreaView>
     );
 }
