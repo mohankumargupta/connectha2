@@ -87,7 +87,7 @@ export default function EntitiesList() {
             //console.log("inside sendmessage");
             console.log(message);
             if ("id" in message && message.id === id) {
-                console.log("message matches");
+                //console.log("message matches");
                 const data = message.result;
                 const new_entities: Array<FlatListItem> = data.map((item: EntityFromHA): FlatListItem => {
                     return {

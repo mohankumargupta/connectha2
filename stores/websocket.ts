@@ -11,6 +11,7 @@ interface WebSocketInterface {
     sendMessage: (message: MessageBase, callback: (event: MessageEvent<any>)=>void)  => number,
     callback: ((event: MessageEvent<any>) => void)|undefined;
     registerCallBack: (callback: (event: MessageEvent<any>) => void) => void,
+    clearCallback: () => void,
     //messageHandler: (event: MessageEvent<any>) => void,
 
     //messageHandlers: Set<(event: MessageEvent<any>) => void>,
@@ -38,6 +39,11 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
         set((state) => ({
             callback,
           }));
+    },
+    clearCallback: () => {
+        set(() => ({
+            callback: undefined,
+        }));
     },
     init: (_url: string, _access_token: string) => {
       set((_)=>{
@@ -72,6 +78,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
            
            ws.onmessage = e => {
                const callback = get().callback;
+               const clearCallback = get().clearCallback;
                const message = JSON.parse(e.data);
 
                //console.log("---", message.type);
@@ -80,6 +87,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
                if (callback) {
                 console.log("callback defined");
                 callback(e);
+                clearCallback();
                }
                else {
                 console.log("callback not defined");
@@ -119,10 +127,10 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
          message.id = message.id ? message.id: newid;
          registerCallBack(callback);
          setTimeout(()=>{
-            console.log("is callback defined?");
-            console.log(get().callback);
+            //console.log("is callback defined?");
+            //console.log(get().callback);
             socket!.send(JSON.stringify(message));
-         }, 2000);
+         }, 0);
         
          set((state)=>({id: newid}));
          //set((state) => ({ messageHandler: callback }), true);

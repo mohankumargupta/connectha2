@@ -21,14 +21,15 @@ export default function main() {
     const navigation = useNavigation();
     const isFocused = navigation.isFocused;
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
-    const unsubscribe = useWebsocketManager((state) => state.unsubscribe);
-    const subscribe = useWebsocketManager((state) => state.subscribe);
+    //const unsubscribe = useWebsocketManager((state) => state.unsubscribe);
+    //const subscribe = useWebsocketManager((state) => state.subscribe);
     const [onOff, setOnOff] = useState(false);
 
     async function load() {
         const ha_url = await AsyncStorage.getItem(AuthData.ha_url);
         console.log(`ha_url from AsyncStorage: ${ha_url}`);
         const buttonDetails = await AsyncStorage.getItem(convertToValidKeyName(ha_url!));
+        console.log(buttonDetails);
         const entity_id = await AsyncStorage.getItem("entity_id");
         const name = await AsyncStorage.getItem("friendly_name");
         const action = await AsyncStorage.getItem("action");
@@ -46,6 +47,7 @@ export default function main() {
                 icon
             });
             if (live?.toLocaleLowerCase() === "true") {
+                /*
                 subscribe(event => {
                     const data = JSON.parse(event.data);
                     if (data.event) {
@@ -61,8 +63,12 @@ export default function main() {
                         }
                     }
                 });
+                */
             }
-            sendMessage(subscribe_trigger(entity_id));
+            sendMessage(subscribe_trigger(entity_id), event => {
+                const message = JSON.parse(event.data);
+                console.log(message);
+            });
         }
     }
 
@@ -83,7 +89,7 @@ export default function main() {
             <View style={styles.container}>
                 <TouchableOpacity onPress={async () => {
                     const action = await AsyncStorage.getItem("action");
-                    sendMessage(callService("homeassistant", habutton?.action as string, undefined, { entity_id: habutton?.entity_id }));
+                    sendMessage(callService("homeassistant", habutton?.action as string, undefined, { entity_id: habutton?.entity_id }), event => { });
                 }}>
                     <Avatar.Icon
                         style={styles.icon}

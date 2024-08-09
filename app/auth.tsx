@@ -84,13 +84,13 @@ export default function auth() {
             console.log(haUrl);
 
             if (haUrl && tokenResponse.accessToken) {
-                console.log("going to entitiesList before save");
-                //await save(state,);
+                //console.log("going to entitiesList before save");
+                await save(haUrl, tokenResponse);
                 //connect(state, tokenResponse.accessToken);
                 websocket_init(haUrl, tokenResponse.accessToken);
                 websocket_connect();
 
-                console.log("really going now.");
+                //console.log("really going now.");
                 setTimeout(() => {
                     router.replace(route_options.entitiesList);
                 }, 2000);
@@ -107,7 +107,6 @@ export default function auth() {
 
     return (
         <SafeAreaView>
-            <><Text>Boo</Text></>
         </SafeAreaView>
     )
 }
