@@ -66,15 +66,17 @@ export default function main() {
                 });
                 */
             }
-            /*
+
             sendMessage(subscribe_trigger(entity_id), event => {
                 const message = JSON.parse(event.data);
                 console.log(message);
             });
-            */
+
             sendMessageTrigger(entity_id, event => {
                 const message = JSON.parse(event.data);
-                console.log(message.event.variables.trigger.to_state.state);
+                const isOn = message.event.variables.trigger.to_state.state;
+                //console.log(message.event.variables.trigger.to_state.state);
+                isOn === "on" ? setOnOff(true) : setOnOff(false);
                 console.log("main.tsx:sendmessagetrigger");
             });
         }
