@@ -67,10 +67,10 @@ export default function main() {
                 */
             }
 
-            sendMessage(subscribe_trigger(entity_id), event => {
-                const message = JSON.parse(event.data);
-                console.log(message);
-            });
+            //sendMessage(subscribe_trigger(entity_id), event => {
+            //    const message = JSON.parse(event.data);
+            //    console.log(message);
+            //});
 
             sendMessageTrigger(entity_id, event => {
                 const message = JSON.parse(event.data);
