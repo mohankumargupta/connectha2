@@ -1,16 +1,21 @@
-import { MessageBase } from '@/types/messages';
+import { MessageBase, subscribe_trigger } from '@/types/messages';
 import { create } from 'zustand'
 
 interface WebSocketInterface {
     socket: WebSocket|undefined,
     url: string,
     access_token: string,
+    nextMessageId: number,
+    triggerid: number,
     id: number,
+    incrementMessageId: () => number,
     init: (url: string, access_token: string) => void,
     connect: () => void,
     sendMessage: (message: MessageBase, callback: (event: MessageEvent<any>)=>void)  => number,
-    subscribe_trigger: (message: MessageBase, callback: (event: MessageEvent<any>)=>void) => void,
+    sendMessageTrigger: (entity_id: string, callback: (event: MessageEvent<any>)=>void)  => void,
+    //subscribe_trigger: (message: MessageBase, callback: (event: MessageEvent<any>)=>void) => void,
     callback: ((event: MessageEvent<any>) => void)|undefined;
+    triggerCallback: ((event: MessageEvent<any>) => void)|undefined;
     registerCallBack: (callback: (event: MessageEvent<any>) => void) => void,
     clearCallback: () => void,
     registerTriggerCallBack: (callback: (event: MessageEvent<any>) => void) => void,
@@ -37,6 +42,13 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
     access_token: '',
     id: 2,
     callback: undefined,
+    triggerCallback: undefined,
+    nextMessageId: 1,
+    triggerid: 0,
+    incrementMessageId: () => {
+       set((state)=>({"nextMessageId":state.nextMessageId + 1}));
+       return get().nextMessageId;
+    },
     registerCallBack: (callback: (event: MessageEvent<any>) => void) => {
         console.log("about to register callback");
         set((state) => ({
@@ -48,10 +60,15 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
             callback: undefined,
         }));
     },
-    subscribe_trigger: (message: MessageBase, callback: (event: MessageEvent<any>)=>void) => {
-
+    //subscribe_trigger: (message: MessageBase, callback: (event: MessageEvent<any>)=>void) => {
+    //
+    //},
+    registerTriggerCallBack: (triggerCallback: (event: MessageEvent<any>) => void) => {
+        console.log("about to register trigger callback");
+        set((state) => ({
+            triggerCallback,
+          }));        
     },
-    registerTriggerCallBack: (callback: (event: MessageEvent<any>) => void) => {},
     clearRegisterCallback: () => {},
     init: (_url: string, _access_token: string) => {
       set((_)=>{
@@ -88,9 +105,19 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
                const callback = get().callback;
                const clearCallback = get().clearCallback;
                const message = JSON.parse(e.data);
-
-               //console.log("---", message.type);
-               //console.log(JSON.parse(e.data));
+               const id = get().id;
+               const triggerid = get().triggerid;
+               const triggerCallback = get().triggerCallback; 
+               
+               if (message.type === 'event') {
+                console.log("---", message.type);
+                if (triggerCallback) {
+                    triggerCallback(e);
+                }
+               }
+               
+               console.log(`id: ${id} triggerid: ${triggerid}`);
+               console.log(JSON.parse(e.data));
                console.log("inside ws.onmessage");
                if (callback) {
                 console.log("callback defined");
@@ -102,7 +129,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
                }
                 
                if (message["id"]) {
-                 console.log(`inside onmessage-id: ${message["id"]}`);
+                 //console.log(`inside onmessage-id: ${message["id"]}`);
                  //messageHandler(e);
 
                }
@@ -131,8 +158,10 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
         //console.log("send message");
         //if (connected(socket)) {
          //console.log("end send message");
-         const newid = id + 1;
+         //const newid = id + 1;
+         const newid = get().incrementMessageId();
          message.id = message.id ? message.id: newid;
+         
          registerCallBack(callback);
          setTimeout(()=>{
             //console.log("is callback defined?");
@@ -146,6 +175,41 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
          return newid;
         //}
 
+    },
+    sendMessageTrigger(entity_id, callback) {
+        const socket = get().socket;
+        const id = get().id;
+        const registerTriggerCallBack = get().registerTriggerCallBack;
+
+        if (!connected(socket)) {
+            console.log("not connected. try connecting");
+            get().connect();
+        }
+
+
+
+        //console.log("send message");
+        //if (connected(socket)) {
+         //console.log("end send message");
+         //const newid = id + 1;
+         const newid = get().incrementMessageId();
+        // message.id = message.id ? message.id: newid;
+         
+         registerTriggerCallBack(callback);
+         setTimeout(()=>{
+            //console.log("is callback defined?");
+            //console.log(get().callback);
+            let message:MessageBase = subscribe_trigger(entity_id);
+            message.id = newid;
+            //console.log(message)
+            socket!.send(JSON.stringify(message));
+         }, 0);
+        
+         set((state)=>({id: newid}));
+         //set((state) => ({ messageHandler: callback }), true);
+         
+         //return newid;
+        
     },
     //messageHandler: undefined
     //id: 2, //id:1 is usually used for supportedFeatures message

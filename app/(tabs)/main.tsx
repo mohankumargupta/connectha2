@@ -21,6 +21,7 @@ export default function main() {
     const navigation = useNavigation();
     const isFocused = navigation.isFocused;
     const sendMessage = useWebsocketManager((state) => state.sendMessage);
+    const sendMessageTrigger = useWebsocketManager((state) => state.sendMessageTrigger);
     //const unsubscribe = useWebsocketManager((state) => state.unsubscribe);
     //const subscribe = useWebsocketManager((state) => state.subscribe);
     const [onOff, setOnOff] = useState(false);
@@ -65,9 +66,16 @@ export default function main() {
                 });
                 */
             }
+            /*
             sendMessage(subscribe_trigger(entity_id), event => {
                 const message = JSON.parse(event.data);
                 console.log(message);
+            });
+            */
+            sendMessageTrigger(entity_id, event => {
+                const message = JSON.parse(event.data);
+                console.log(message.event.variables.trigger.to_state.state);
+                console.log("main.tsx:sendmessagetrigger");
             });
         }
     }
