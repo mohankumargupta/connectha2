@@ -105,6 +105,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
                const callback = get().callback;
                const clearCallback = get().clearCallback;
                const message = JSON.parse(e.data);
+               //console.log(message);
                const id = get().id;
                const triggerid = get().triggerid;
                const triggerCallback = get().triggerCallback; 
@@ -116,23 +117,28 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
                 }
                }
                
-               console.log(`id: ${id} triggerid: ${triggerid}`);
-               console.log(JSON.parse(e.data));
-               console.log("inside ws.onmessage");
-               if (callback) {
-                console.log("callback defined");
-                callback(e);
-                clearCallback();
+               else if (message.type === 'result') {
+                console.log(`---id: ${id} `);
+                if (callback) {
+                 console.log("callback defined");
+                 callback(e);
+                 clearCallback();
+                }
+                else {
+                 
+                 console.log(`callback not defined id: ${id}`);
+                }
                }
-               else {
-                console.log("callback not defined");
-               }
+
+               //console.log(`id: ${id} triggerid: ${triggerid}`);
+               //console.log(JSON.parse(e.data));
+
                 
-               if (message["id"]) {
+               //if (message["id"]) {
                  //console.log(`inside onmessage-id: ${message["id"]}`);
                  //messageHandler(e);
 
-               }
+               //}
                
            }
 
@@ -161,7 +167,8 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
          //const newid = id + 1;
          const newid = get().incrementMessageId();
          message.id = message.id ? message.id: newid;
-         
+         console.log(`send message with messageid: ${message.id}`);
+
          registerCallBack(callback);
          setTimeout(()=>{
             //console.log("is callback defined?");

@@ -6,8 +6,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useNavigation } from 'expo-router';
 import { route_options } from '@/constants/routes';
 import { useWebsocketManager } from '@/stores/websocket';
-import { callService, subscribe_trigger } from '@/types/messages';
+import { callService, states, subscribe_trigger } from '@/types/messages';
 import { AuthData, convertToValidKeyName } from '@/constants/AuthData';
+import { EntityFromHA } from '@/types/entities';
 
 type HAButton = {
     entity_id: string,
@@ -72,6 +73,26 @@ export default function main() {
             //    console.log(message);
             //});
 
+            const id = sendMessage(states(), (event) => {
+
+                console.log("it works in main.tsx!!!");
+                const message = JSON.parse(event.data);
+                //console.log(message);
+                const data = message.result;
+                if ("id" in message && message.id === id) {
+                    const found = data.find((obj: EntityFromHA) => obj.entity_id === entity_id);
+                    console.log(found);
+                    if (found.state === "off") {
+                        //console.log("turning off");
+                        setOnOff(false);
+                    }
+                    if (found.state === "on") {
+                        //console.log("turning off");
+                        setOnOff(true);
+                    }
+
+                }
+            });
             sendMessageTrigger(entity_id, event => {
                 const message = JSON.parse(event.data);
                 const isOn = message.event.variables.trigger.to_state.state;
@@ -79,11 +100,13 @@ export default function main() {
                 isOn === "on" ? setOnOff(true) : setOnOff(false);
                 console.log("main.tsx:sendmessagetrigger");
             });
+
+
         }
     }
 
     useEffect(() => {
-
+        //load();
     }, []);
 
     useEffect(() => {
