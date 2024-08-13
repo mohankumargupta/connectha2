@@ -111,7 +111,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
                const triggerCallback = get().triggerCallback; 
                
                if (message.type === 'event') {
-                console.log("---", message.type);
+                //console.log("---", message.type);
                 if (triggerCallback) {
                     triggerCallback(e);
                 }

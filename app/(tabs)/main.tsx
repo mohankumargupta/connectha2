@@ -74,7 +74,6 @@ export default function main() {
             //});
 
             const id = sendMessage(states(), (event) => {
-
                 console.log("it works in main.tsx!!!");
                 const message = JSON.parse(event.data);
                 //console.log(message);
