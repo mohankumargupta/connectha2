@@ -147,6 +147,7 @@ export default function Example() {
                                     <View key={`${service.address}_${service.port}`} style={styles.sectionBody}>
                                         <View style={classes}>
                                             <TouchableOpacity
+                                                testID={`touchable${i}`}
                                                 onPress={() => {
                                                     submit(`http://${service.address}:${service.port}`);
                                                 }}

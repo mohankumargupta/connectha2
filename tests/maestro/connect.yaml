@@ -7,4 +7,9 @@ appId: com.mohankumargupta.bigbuttonha
 #- waitForAnimationToEnd:
 #    timeout: 15000
 - assertVisible: Find Home Assistant
+# This tests assume there is a Home Assistant on the network, if not it will fail.
+- tapOn:
+    id: touchable0
+- waitForAnimationToEnd:
+    timeout: 45000
 - stopApp

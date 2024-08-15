@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     StyleSheet,
     SafeAreaView,
@@ -13,6 +13,8 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { TextInput } from 'react-native-paper';
+import { getItem } from '../auth';
+import { AuthData } from '@/constants/AuthData';
 
 export default function Settings() {
     const [form, setForm] = useState({
@@ -21,6 +23,28 @@ export default function Settings() {
     });
     const [urlScheme, setUrlScheme] = useState('http');
     const [ha, setHA] = useState('')
+    const [haservers, setHAServers] = useState<string[]>([]);
+
+    useEffect(() => {
+        function removeDuplicates(arr: string[]): string[] {
+            return [...new Set(arr)];
+        }
+
+        async function load() {
+            const serversStringifed = await getItem(AuthData.ha_server_list);
+            console.log(serversStringifed);
+
+            if (serversStringifed) {
+                const servers = JSON.parse(serversStringifed)
+                //const uniqueServers = removeDuplicates([servers]);
+                console.log(servers);
+                setHAServers(servers);
+
+            }
+
+        }
+        load();
+    }, []);
 
     return (
         <SafeAreaView style={{ flex: 1, flexBasis: 0, flexGrow: 1, flexShrink: 1, marginTop: 36 }}>
@@ -34,46 +58,36 @@ export default function Settings() {
                                     // handle onPress
                                 }}
                                 style={styles.row}>
-                                <Text style={styles.rowLabel}>http://192.168.20.98:8123</Text>
+                                <Text style={styles.rowLabel}>http://192.168.1.1:8123</Text>
                                 <View style={styles.rowSpacer} />
                                 <Feather
                                     color="#bcbcbc"
                                     name="chevron-right"
                                     size={19} />
                             </TouchableOpacity>
+
                         </View>
-                        <View style={styles.rowWrapper}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    // handle onPress
-                                }}
-                                style={styles.row}>
-                                <Text style={styles.rowLabel}>http://192.168.20.17:8123</Text>
+                        {
+                            haservers.map((elem) => {
+                                return (
+                                    <View style={[styles.rowWrapper]}>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                // handle onPress
+                                            }}
+                                            style={styles.row}>
+                                            <Text style={styles.rowLabel}>{elem}</Text>
+                                            <View style={styles.rowSpacer} />
+                                            <Feather
+                                                color="#bcbcbc"
+                                                name="chevron-right"
+                                                size={19} />
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            })
+                        }
 
-                                <View style={styles.rowSpacer} />
-
-                                <Feather
-                                    color="#bcbcbc"
-                                    name="chevron-right"
-                                    size={19} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={[styles.rowWrapper, styles.rowLast]}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    // handle onPress
-                                }}
-                                style={styles.row}>
-                                <Text style={styles.rowLabel}>http://192.168.1.8:8123</Text>
-
-                                <View style={styles.rowSpacer} />
-
-                                <Feather
-                                    color="#bcbcbc"
-                                    name="chevron-right"
-                                    size={19} />
-                            </TouchableOpacity>
-                        </View>
                     </View>
                 </View>
 
