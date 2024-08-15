@@ -52,21 +52,6 @@ export default function Settings() {
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Home Assistant</Text>
                     <View style={styles.sectionBody}>
-                        <View style={[styles.rowWrapper, styles.rowFirst]}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    // handle onPress
-                                }}
-                                style={styles.row}>
-                                <Text style={styles.rowLabel}>http://192.168.1.1:8123</Text>
-                                <View style={styles.rowSpacer} />
-                                <Feather
-                                    color="#bcbcbc"
-                                    name="chevron-right"
-                                    size={19} />
-                            </TouchableOpacity>
-
-                        </View>
                         {
                             haservers.map((elem) => {
                                 return (
