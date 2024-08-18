@@ -99,6 +99,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
              }; 
            ws.onerror = e => {
                console.log(e);
+               console.error('WebSocket error:', e);
            }
            
            ws.onmessage = e => {
@@ -155,7 +156,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
         const registerCallBack = get().registerCallBack;
 
         if (!connected(socket)) {
-            console.log("not connected. try connecting");
+            console.log("not connected message. try connecting");
             get().connect();
         }
 
@@ -174,7 +175,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
             //console.log("is callback defined?");
             //console.log(get().callback);
             socket!.send(JSON.stringify(message));
-         }, 0);
+         }, 1000);
         
          set((state)=>({id: newid}));
          //set((state) => ({ messageHandler: callback }), true);
@@ -189,7 +190,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
         const registerTriggerCallBack = get().registerTriggerCallBack;
 
         if (!connected(socket)) {
-            console.log("not connected. try connecting");
+            console.log("not connected message trigger. try connecting");
             get().connect();
         }
 
@@ -210,7 +211,7 @@ export const useWebsocketManager = create<WebSocketInterface>((set, get) => ({
             message.id = newid;
             //console.log(message)
             socket!.send(JSON.stringify(message));
-         }, 0);
+         }, 1000);
         
          set((state)=>({id: newid}));
          //set((state) => ({ messageHandler: callback }), true);

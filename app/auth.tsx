@@ -93,7 +93,7 @@ export default function auth() {
                 //console.log("really going now.");
                 setTimeout(() => {
                     router.replace(route_options.entitiesList);
-                }, 0);
+                }, 1000);
 
             }
 
